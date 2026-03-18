@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Redefinir Senha - AFFriend Code</title>
+
+  <!-- Font Awesome (ícones reais) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- Google Fonts (Poppins - moderno e limpo) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #000000 0%, #1a0000 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(20, 20, 20, 0.88);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(255, 51, 51, 0.28);
+      padding: 40px 30px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      border: 1px solid rgba(255, 51, 51, 0.18);
+    }
+
+    .logo-container {
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid rgba(255, 51, 51, 0.4);
+      box-shadow: 0 10px 30px rgba(255, 51, 51, 0.45);
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #ff3333;
+      margin-bottom: 12px;
+    }
+
+    p.subtitle {
+      font-size: 15px;
+      color: #cccccc;
+      margin-bottom: 35px;
+      line-height: 1.6;
+    }
+
+    .form-group {
+      margin-bottom: 28px;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      color: #ff9999;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    input[type="password"] {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 51, 51, 0.35);
+      border-radius: 10px;
+      background: rgba(30, 30, 30, 0.75);
+      color: #ffffff;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+
+    input[type="password"]:focus {
+      outline: none;
+      border-color: #ff3333;
+      box-shadow: 0 0 0 4px rgba(255, 51, 51, 0.25);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(90deg, #ff3333, #cc0000);
+      color: white;
+      font-size: 17px;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 12px;
+      box-shadow: 0 8px 25px rgba(255, 51, 51, 0.4);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(255, 51, 51, 0.55);
+    }
+
+    .social {
+      margin-top: 45px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .social h3 {
+      font-size: 16px;
+      color: #cccccc;
+      margin-bottom: 22px;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .social-btn {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 24px;
+      transition: all 0.3s;
+      text-decoration: none;
+      border: 1px solid rgba(255, 51, 51, 0.2);
+    }
+
+    .social-btn:hover {
+      background: #ff3333;
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(255, 51, 51, 0.45);
+      border-color: transparent;
+    }
+
+    .footer {
+      margin-top: 45px;
+      font-size: 13px;
+      color: #777777;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 35px 20px;
+      }
+      .logo {
+        width: 100px;
+        height: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Logo do AFFriend Code (substitui pelo teu link real quando tiveres) -->
+    <div class="logo-container">
+      <img src="img\AFFriendCode.png" alt="AFFriend Code Logo" class="logo"/>
+    </div>
+
+    <h1>Redefinir Senha</h1>
+    <p class="subtitle">
+      Crie uma nova senha segura para continuar a usar o AFFriend Code.
+    </p>
+
+    <form id="resetForm">
+      <div class="form-group">
+        <label for="password">Nova Senha</label>
+        <input type="password" id="password" placeholder="Mínimo 6 caracteres" required/>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirmar Senha</label>
+        <input type="password" id="confirmPassword" placeholder="Repita a senha" required/>
+      </div>
+
+      <button type="submit" class="btn" id="btnReset">
+        <i class="fas fa-key"></i> Alterar Senha
+      </button>
+    </form>
+
+    <div class="social">
+      <h3>Conecte-se connosco</h3>
+      <div class="social-links">
+        <a href="https://afffriendcode.blogspot.com" class="social-btn" target="_blank" title="Site Oficial">
+          <i class="fas fa-globe"></i>
+        </a>
+        <a href="https://www.facebook.com/share/18WgcHxAn9/" class="social-btn" target="_blank" title="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://youtube.com/@afffriendcode" class="social-btn" target="_blank" title="YouTube">
+          <i class="fab fa-youtube"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer">
+      AFFriend Code © 2025 • Feito em Angola com ❤️
+    </div>
+  </div>
+
+  <script>
+    // Validação simples no frontend (podes integrar Firebase depois)
+    document.getElementById("resetForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+
+      if (password.length < 6) {
+        alert("A senha deve ter pelo menos 6 caracteres.");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert("As senhas não coincidem.");
+        return;
+      }
+
+      alert("Senha alterada com sucesso! (Esta é uma simulação. Integre com Firebase Authentication.)");
+      // Aqui entraria o código real do Firebase para atualizar a senha
+        
+        <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
+<script>
+  // Config do teu Firebase (copia do teu projeto)
+  const firebaseConfig = {
+    apiKey: "AIzaSyBPwZfzPx3sphRihEn3Lq9-kdl7v90E3IQ",
+    authDomain: "affriend-191815.firebaseapp.com",
+    databaseURL: "https://affriend-191815.firebaseio.com",
+    projectId: "affriend-191815",
+    storageBucket: "affriend-191815.firebasestorage.app",
+    messagingSenderId: "119765669625",
+    appId: "1:119765669625:web:b31ba888b91834a88b3428",
+    measurementId: "G-NVCVEW81PF"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  document.getElementById("resetForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (password.length < 6) {
+      alert("A senha deve ter pelo menos 6 caracteres.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("As senhas não coincidem.");
+      return;
+    }
+
+    // Pega o oobCode da URL do email
+    const urlParams = new URLSearchParams(window.location.search);
+    const oobCode = urlParams.get('oobCode');
+
+    if (!oobCode) {
+      alert("Link inválido ou expirado.");
+      return;
+    }
+
+    firebase.auth().confirmPasswordReset(oobCode, password)
+    .then(() => {
+      alert("Senha alterada com sucesso! Pode fazer login agora.");
+      // Opcional: redireciona para tela de login
+      window.location.href = "https://teu-app.com/login";
+    })
+    .catch(err => {
+      alert("Erro: " + err.message);
+    });
+  });
+    });
+  </script>
+</body>
+</html>
