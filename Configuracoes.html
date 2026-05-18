@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Configurações - AFFriend Code</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+
+<body class="bg-gray-50">
+
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur border-b border-red-900/40">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg">AF</div>
+        <div class="leading-tight">
+          <div class="text-white font-semibold text-sm md:text-base">AFFriend Code</div>
+          <div class="text-xs text-gray-400">Configurações</div>
+        </div>
+      </div>
+      <a href="perfil.html" class="text-gray-300 hover:text-white text-sm">Voltar</a>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO -->
+  <main class="pt-28 pb-20 max-w-4xl mx-auto px-6">
+
+    <h1 class="text-3xl font-bold text-gray-900 mb-10">Configurações da Conta</h1>
+
+    <!-- ALTERAR NOME -->
+    <div class="bg-white p-8 rounded-3xl shadow mb-10">
+      <h2 class="text-xl font-semibold mb-4">Alterar Nome</h2>
+      <input id="nome" type="text" class="p-3 border rounded-xl w-full" placeholder="Novo nome">
+      <button onclick="alterarNome()" class="mt-4 bg-red-600 text-white px-6 py-3 rounded-xl hover:bg-red-500">
+        Salvar Nome
+      </button>
+    </div>
+
+    <!-- ALTERAR SENHA -->
+    <div class="bg-white p-8 rounded-3xl shadow mb-10">
+      <h2 class="text-xl font-semibold mb-4">Alterar Senha</h2>
+      <input id="senha" type="password" class="p-3 border rounded-xl w-full" placeholder="Nova senha">
+      <button onclick="alterarSenha()" class="mt-4 bg-red-600 text-white px-6 py-3 rounded-xl hover:bg-red-500">
+        Atualizar Senha
+      </button>
+    </div>
+
+    <!-- EXCLUIR CONTA -->
+    <div class="bg-white p-8 rounded-3xl shadow">
+      <h2 class="text-xl font-semibold mb-4 text-red-600">Excluir Conta</h2>
+      <p class="text-gray-600 mb-4">Esta ação é permanente.</p>
+      <button onclick="excluirConta()" class="bg-black text-white px-6 py-3 rounded-xl hover:bg-gray-900">
+        Excluir Minha Conta
+      </button>
+    </div>
+
+  </main>
+
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    const auth = firebase.auth();
+
+    auth.onAuthStateChanged(user => {
+      if (!user) location.href = "login.html";
+      document.getElementById("nome").value = user.displayName || "";
+    });
+
+    function alterarNome() {
+      const nome = document.getElementById("nome").value.trim();
+      if (!nome) return alert("Digite um nome válido.");
+
+      auth.currentUser.updateProfile({ displayName: nome }).then(() => {
+        alert("Nome atualizado com sucesso!");
+      });
+    }
+
+    function alterarSenha() {
+      const senha = document.getElementById("senha").value.trim();
+      if (senha.length < 6) return alert("A senha deve ter pelo menos 6 caracteres.");
+
+      auth.currentUser.updatePassword(senha).then(() => {
+        alert("Senha atualizada!");
+      });
+    }
+
+    function excluirConta() {
+      if (!confirm("Tem certeza que deseja excluir sua conta?")) return;
+
+      auth.currentUser.delete().then(() => {
+        alert("Conta excluída.");
+        location.href = "index.html";
+      });
+    }
+  </script>
+
+</body>
+</html>

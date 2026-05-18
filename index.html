@@ -3,302 +3,657 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Redefinir Senha - AFFriend Code</title>
-
-  <!-- Font Awesome (ícones reais) -->
+  <meta name="google-adsense-account" content="ca-pub-3347055381425263">
+   <title>AFFriend</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
-  <!-- Google Fonts (Poppins - moderno e limpo) -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <!-- Google Tag Manager -->
+   
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: '#ff3333' }
+        }
+      }
+    }
+  </script>
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    .btn-hover {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #000000 0%, #1a0000 100%);
-      color: #ffffff;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+    .btn-hover:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 18px 30px -10px rgb(255 51 51 / 0.45);
     }
-
-    .container {
-      background: rgba(20, 20, 20, 0.88);
-      backdrop-filter: blur(12px);
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(255, 51, 51, 0.28);
-      padding: 40px 30px;
-      max-width: 500px;
-      width: 100%;
-      text-align: center;
-      border: 1px solid rgba(255, 51, 51, 0.18);
+    .hero-pulse {
+      animation: pulse 3s infinite;
     }
-
-    .logo-container {
-      margin-bottom: 30px;
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0.5); }
+      70% { box-shadow: 0 0 0 25px rgba(255, 51, 51, 0); }
     }
-
-    .logo {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 4px solid rgba(255, 51, 51, 0.4);
-      box-shadow: 0 10px 30px rgba(255, 51, 51, 0.45);
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.7s ease-out;
     }
-
-    h1 {
-      font-size: 28px;
-      font-weight: 700;
-      color: #ff3333;
-      margin-bottom: 12px;
-    }
-
-    p.subtitle {
-      font-size: 15px;
-      color: #cccccc;
-      margin-bottom: 35px;
-      line-height: 1.6;
-    }
-
-    .form-group {
-      margin-bottom: 28px;
-      text-align: left;
-    }
-
-    label {
-      display: block;
-      font-size: 14px;
-      color: #ff9999;
-      margin-bottom: 8px;
-      font-weight: 500;
-    }
-
-    input[type="password"] {
-      width: 100%;
-      padding: 14px 16px;
-      border: 1px solid rgba(255, 51, 51, 0.35);
-      border-radius: 10px;
-      background: rgba(30, 30, 30, 0.75);
-      color: #ffffff;
-      font-size: 16px;
-      transition: all 0.3s;
-    }
-
-    input[type="password"]:focus {
-      outline: none;
-      border-color: #ff3333;
-      box-shadow: 0 0 0 4px rgba(255, 51, 51, 0.25);
-    }
-
-    .btn {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(90deg, #ff3333, #cc0000);
-      color: white;
-      font-size: 17px;
-      font-weight: 600;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s;
-      margin-top: 12px;
-      box-shadow: 0 8px 25px rgba(255, 51, 51, 0.4);
-    }
-
-    .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(255, 51, 51, 0.55);
-    }
-
-    .social {
-      margin-top: 45px;
-      padding-top: 30px;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .social h3 {
-      font-size: 16px;
-      color: #cccccc;
-      margin-bottom: 22px;
-    }
-
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-    }
-
-    .social-btn {
-      width: 55px;
-      height: 55px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.08);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #ffffff;
-      font-size: 24px;
-      transition: all 0.3s;
-      text-decoration: none;
-      border: 1px solid rgba(255, 51, 51, 0.2);
-    }
-
-    .social-btn:hover {
-      background: #ff3333;
-      transform: translateY(-6px);
-      box-shadow: 0 12px 30px rgba(255, 51, 51, 0.45);
-      border-color: transparent;
-    }
-
-    .footer {
-      margin-top: 45px;
-      font-size: 13px;
-      color: #777777;
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: 35px 20px;
-      }
-      .logo {
-        width: 100px;
-        height: 100px;
-      }
+    .fade-up.show {
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-900">
 
-  <div class="container">
-    <!-- Logo do AFFriend Code (substitui pelo teu link real quando tiveres) -->
-    <div class="logo-container">
-      <img src="img\AFFriendCode.png" alt="AFFriend Code Logo" class="logo"/>
-    </div>
-
-    <h1>Redefinir Senha</h1>
-    <p class="subtitle">
-      Crie uma nova senha segura para continuar a usar o AFFriend Code.
-    </p>
-
-    <form id="resetForm">
-      <div class="form-group">
-        <label for="password">Nova Senha</label>
-        <input type="password" id="password" placeholder="Mínimo 6 caracteres" required/>
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur border-b border-red-900/40">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white font-bold text-lg">
+          AF
+        </div>
+        <div class="leading-tight">
+          <div class="text-white font-semibold text-sm md:text-base">Professor Abraão Figueira</div>
+          <div class="text-xs text-gray-400">AFFriend Code Platform</div>
+        </div>
       </div>
-
-      <div class="form-group">
-        <label for="confirmPassword">Confirmar Senha</label>
-        <input type="password" id="confirmPassword" placeholder="Repita a senha" required/>
-      </div>
-
-      <button type="submit" class="btn" id="btnReset">
-        <i class="fas fa-key"></i> Alterar Senha
-      </button>
-    </form>
-
-    <div class="social">
-      <h3>Conecte-se connosco</h3>
-      <div class="social-links">
-        <a href="https://afffriendcode.blogspot.com" class="social-btn" target="_blank" title="Site Oficial">
-          <i class="fas fa-globe"></i>
-        </a>
-        <a href="https://www.facebook.com/share/18WgcHxAn9/" class="social-btn" target="_blank" title="Facebook">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="https://youtube.com/@afffriendcode" class="social-btn" target="_blank" title="YouTube">
-          <i class="fab fa-youtube"></i>
+      <nav class="hidden md:flex items-center gap-6 text-sm text-gray-300">
+        <a href="#destaques" class="hover:text-white">Ferramentas</a>
+        <a href="#porque" class="hover:text-white">Por que usar</a>
+        <a href="#planos" class="hover:text-white">Planos</a>
+        <a href="#depoimentos" class="hover:text-white">Resultados</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="login.html" class="hidden md:inline-block text-sm text-gray-200 hover:text-white">Entrar</a>
+        <a href="login.html" class="btn-hover bg-primary text-white px-4 md:px-6 py-2 rounded-full text-sm font-semibold">
+          Criar Conta Grátis
         </a>
       </div>
     </div>
+  </header>
 
-    <div class="footer">
-      AFFriend Code © 2025 • Feito em Angola com ❤️
+  <!-- HERO -->
+  <section class="bg-gradient-to-br from-black via-red-950 to-black text-white pt-32 md:pt-40 pb-24 md:pb-32 relative overflow-hidden">
+    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+      <!-- Texto -->
+      <div class="fade-up">
+        <span class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-red-300 bg-white/5 border border-red-500/40 px-3 py-1 rounded-full mb-5">
+          <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+          Plataforma para criadores, programadores e empreendedores digitais
+        </span>
+
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-5 tracking-tight">
+          A Plataforma Completa para <span class="text-primary">Criar, Organizar</span> e <span class="text-primary">Lançar</span> seus Projetos Digitais
+        </h1>
+
+        <p class="text-base md:text-lg text-gray-200 mb-8 max-w-xl">
+          O AFFriend Code reúne editor de código, mini pautas inteligentes, materiais didáticos e ferramentas de marketing digital
+          em um só lugar — para você aprender, criar e crescer com foco em resultados reais.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-4 mb-6">
+          <a href="login.html" 
+             class="btn-hover hero-pulse bg-primary text-white px-8 py-3 rounded-full text-base font-semibold flex items-center gap-2">
+            Criar Conta Grátis
+            <i class="fa-solid fa-arrow-right text-sm"></i>
+          </a>
+          <a href="#destaques" 
+             class="btn-hover bg-white text-black hover:bg-gray-100 px-7 py-3 rounded-full text-base font-semibold flex items-center gap-2">
+            Explorar Ferramentas
+            <i class="fa-solid fa-grid-2"></i>
+          </a>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-6 text-xs md:text-sm text-gray-300">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-circle-check text-primary"></i>
+            <span>Acesso imediato, sem cartão de crédito</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-bolt text-primary"></i>
+            <span>Focado em prática e resultados reais</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mockup / Preview -->
+      <div class="fade-up delay-150">
+        <div class="relative">
+          <div class="absolute -top-10 -left-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl"></div>
+          <div class="absolute -bottom-10 -right-10 w-52 h-52 bg-red-500/20 rounded-full blur-3xl"></div>
+
+          <div class="relative bg-gray-950/80 border border-red-500/40 rounded-3xl p-4 md:p-5 shadow-2xl shadow-red-900/40">
+            <!-- Top bar -->
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
+                <span class="w-3 h-3 rounded-full bg-green-500"></span>
+              </div>
+              <span class="text-xs text-gray-400">AFFriend Code Editor</span>
+            </div>
+
+            <div class="grid grid-cols-5 gap-4">
+              <!-- Sidebar -->
+              <div class="col-span-2 bg-black/60 border border-red-900/40 rounded-2xl p-3 flex flex-col gap-3">
+                <div class="flex items-center justify-between text-xs text-gray-300 mb-1">
+                  <span class="font-semibold text-white">Mini Pautas</span>
+                  <button class="text-primary hover:text-red-300">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
+                <div class="space-y-2 text-[11px] text-gray-300">
+                  <div class="bg-white/5 border border-white/10 rounded-xl px-3 py-2">
+                    <div class="font-semibold text-white mb-1">Aula 01 - HTML Básico</div>
+                    <div class="text-[10px] text-gray-400">Estrutura, tags principais e boas práticas.</div>
+                  </div>
+                  <div class="bg-white/5 border border-white/5 rounded-xl px-3 py-2">
+                    <div class="font-semibold text-white mb-1">Funil de Conteúdo</div>
+                    <div class="text-[10px] text-gray-400">Topo, meio e fundo de funil para produtos digitais.</div>
+                  </div>
+                  <div class="bg-white/5 border border-white/5 rounded-xl px-3 py-2">
+                    <div class="font-semibold text-white mb-1">Plano de Estudos</div>
+                    <div class="text-[10px] text-gray-400">Programação + Marketing Digital.</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Editor + Preview -->
+              <div class="col-span-3 flex flex-col gap-3">
+                <div class="bg-black/60 border border-red-900/40 rounded-2xl p-3">
+                  <div class="flex items-center justify-between mb-2 text-xs text-gray-300">
+                    <span class="font-semibold text-white">index.html</span>
+                    <span class="text-[10px] text-gray-400">Preview em tempo real</span>
+                  </div>
+                  <pre class="text-[10px] md:text-[11px] text-green-300 font-mono leading-relaxed overflow-x-auto">
+&lt;section class="hero"&gt;
+  &lt;h1&gt;Aprenda Programação&lt;/h1&gt;
+  &lt;p&gt;Com o Professor Abraão Figueira&lt;/p&gt;
+  &lt;button&gt;Começar Agora&lt;/button&gt;
+&lt;/section&gt;
+                  </pre>
+                </div>
+                <div class="bg-white rounded-2xl p-3 text-[11px] text-gray-800 shadow-lg">
+                  <div class="bg-gray-900 rounded-xl p-3 mb-2">
+                    <div class="text-[10px] text-gray-400 mb-1">Preview</div>
+                    <div class="bg-gradient-to-r from-red-600 to-red-500 rounded-lg px-3 py-2 text-white text-[11px]">
+                      <div class="font-semibold">Aprenda Programação na Prática</div>
+                      <div class="text-[10px] text-red-100">Com o Professor Abraão Figueira</div>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between text-[10px] text-gray-500">
+                    <span>Editor + Preview em tempo real</span>
+                    <span class="text-primary font-semibold">AFFriend Code</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
+
+  <!-- PROVA SOCIAL -->
+  <section class="py-10 bg-gray-950 border-b border-gray-800">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="text-gray-200 text-sm md:text-base">
+        <span class="text-primary font-semibold">+1200 alunos</span> já passaram pelas formações do Professor Abraão Figueira,
+        aplicando programação, marketing digital e empreendedorismo na prática.
+      </div>
+      <div class="flex flex-wrap gap-4 text-xs md:text-sm text-gray-400">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-code text-primary"></i>
+          <span>Programação aplicada</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-bullhorn text-primary"></i>
+          <span>Marketing digital estratégico</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-rocket text-primary"></i>
+          <span>Produtos digitais e funis</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESTAQUES -->
+  <section id="destaques" class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-12 fade-up">
+        <h2 class="text-3xl md:text-4xl font-bold mb-3">Ferramentas em Destaque</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">
+          Tudo o que você precisa para estudar, criar, organizar e lançar seus projetos digitais em um único ecossistema.
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Mini Pautas -->
+        <div class="group bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-2xl hover:-translate-y-1 transition-all fade-up">
+          <div class="text-5xl mb-6">📝</div>
+          <h3 class="text-2xl font-semibold mb-3">Software de Mini Pautas</h3>
+          <p class="text-gray-600 text-sm mb-4">
+            Organize aulas, conteúdos, funis e tarefas com um sistema inteligente de mini pautas, ideal para professores,
+            criadores de conteúdo e empreendedores digitais.
+          </p>
+          <ul class="text-sm text-gray-600 space-y-1 mb-6">
+            <li><i class="fa-solid fa-circle-check text-primary mr-2"></i>Planejamento de aulas e conteúdos</li>
+            <li><i class="fa-solid fa-circle-check text-primary mr-2"></i>Estruturação de funis e sequências</li>
+            <li><i class="fa-solid fa-circle-check text-primary mr-2"></i>Organização visual e prática</li>
+          </ul>
+          <button onclick="location.href='produtos.html'" 
+                  class="mt-2 w-full bg-primary text-white py-3 rounded-2xl font-medium hover:bg-red-600">
+            Ver Detalhes
+          </button>
+        </div>
+
+        <!-- Editor -->
+        <div class="group bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-2xl hover:-translate-y-1 transition-all fade-up">
+          <div class="text-5xl mb-6">💻</div>
+          <h3 class="text-2xl font-semibold mb-3">AFFriend Code Editor</h3>
+          <p class="text-gray-600 text-sm mb-4">
+            Editor online avançado com preview em tempo real, ideal para aprender programação na prática e testar projetos
+            rapidamente.
+          </p>
+          <ul class="text-sm text-gray-600 space-y-1 mb-6">
+            <li><i class="fa-solid fa-circle-check text-primary mr-2"></i>HTML, CSS e JS com preview instantâneo</li>
+            <li><i class="fa-solid fa-circle-check text-primary mr-2"></i>Ambiente focado em aprendizado</li>
+            <li><i class="fa-solid fa-circle-check text-primary mr-2"></i>Perfeito para aulas e demonstrações</li>
+          </ul>
+          <button onclick="location.href='dashboard.html'" 
+                  class="mt-2 w-full bg-primary text-white py-3 rounded-2xl font-medium hover:bg-red-600">
+            Abrir Editor
+          </button>
+        </div>
+
+        <!-- Materiais -->
+        <div class="group bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-2xl hover:-translate-y-1 transition-all fade-up">
+          <div class="text-5xl mb-6">📚</div>
+          <h3 class="text-2xl font-semibold mb-3">Materiais Didáticos</h3>
+          <p class="text-gray-600 text-sm mb-4">
+            E-books, templates, funis, roteiros e pacotes completos para acelerar sua jornada no digital com base em prática
+            e estratégia.
+          </p>
+          <ul class="text-sm text-gray-600 space-y-1 mb-6">
+            <li><i class="fa-solid fa-circle-check text-primary mr-2"></i>Templates prontos para uso</li>
+            <li><i class="fa-solid fa-circle-check text-primary mr-2"></i>Funis e sequências estruturadas</li>
+            <li><i class="fa-solid fa-circle-check text-primary mr-2"></i>Materiais para aulas e negócios</li>
+          </ul>
+          <button onclick="location.href='materiais.html'" 
+                  class="mt-2 w-full bg-primary text-white py-3 rounded-2xl font-medium hover:bg-red-600">
+            Explorar Materiais
+          </button>
+          <button onclick="location.href='produtos.html'" 
+                  class="mt-2 w-full bg-primary text-white py-3 rounded-2xl font-medium hover:bg-red-600">
+             Produtos
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POR QUE USAR -->
+  <section id="porque" class="py-20 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+      <div class="fade-up">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Por que usar o <span class="text-primary">AFFriend Code</span>?</h2>
+        <p class="text-gray-600 mb-6">
+          Em vez de perder tempo pulando entre várias ferramentas, você concentra tudo em um único ambiente pensado para
+          quem quer aprender, criar e empreender no digital com clareza e foco.
+        </p>
+        <ul class="space-y-4 text-sm text-gray-700">
+          <li class="flex gap-3">
+            <div class="mt-1 text-primary">
+              <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-900">Ecossistema integrado</div>
+              <div>Editor, mini pautas, materiais didáticos e ferramentas de marketing digital trabalhando juntos.</div>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <div class="mt-1 text-primary">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-900">Formação prática</div>
+              <div>Conteúdos pensados para aplicação imediata, não apenas teoria.</div>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <div class="mt-1 text-primary">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-900">Foco em resultados</div>
+              <div>Do estudo à criação de produtos digitais e funis de venda.</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="fade-up delay-150">
+        <div class="bg-white border border-gray-200 rounded-3xl p-6 shadow-xl">
+          <h3 class="text-lg font-semibold mb-4">Você pode usar o AFFriend Code para:</h3>
+          <ul class="space-y-3 text-sm text-gray-700">
+            <li><i class="fa-solid fa-check text-primary mr-2"></i>Planejar aulas e conteúdos semanais</li>
+            <li><i class="fa-solid fa-check text-primary mr-2"></i>Estudar programação com prática guiada</li>
+            <li><i class="fa-solid fa-check text-primary mr-2"></i>Criar funis de vendas para produtos digitais</li>
+            <li><i class="fa-solid fa-check text-primary mr-2"></i>Organizar ideias, projetos e lançamentos</li>
+            <li><i class="fa-solid fa-check text-primary mr-2"></i>Construir uma rotina de estudos e produção</li>
+          </ul>
+          <button onclick="location.href='dashboa.html'" 
+                  class="mt-6 w-full bg-primary text-white py-3 rounded-2xl font-medium hover:bg-red-600">
+            Ver o AFFriend Code em ação
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARA QUEM É -->
+  <section class="py-20 bg-gray-900 text-gray-100">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-10 fade-up">
+        <h2 class="text-3xl md:text-4xl font-bold mb-3">Para quem é o AFFriend Code?</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto">
+          Se você está em uma dessas fases, essa plataforma foi pensada exatamente para você.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-4 gap-6 text-sm">
+        <div class="bg-gray-950 border border-red-900/40 rounded-2xl p-5 fade-up">
+          <div class="text-2xl mb-3">👨‍💻</div>
+          <div class="font-semibold mb-1">Estudantes de Programação</div>
+          <div class="text-gray-400">Querem aprender na prática, ver o código funcionando e construir projetos reais.</div>
+        </div>
+        <div class="bg-gray-950 border border-red-900/40 rounded-2xl p-5 fade-up">
+          <div class="text-2xl mb-3">📢</div>
+          <div class="font-semibold mb-1">Criadores de Conteúdo</div>
+          <div class="text-gray-400">Precisam organizar pautas, roteiros, aulas e conteúdos recorrentes.</div>
+        </div>
+        <div class="bg-gray-950 border border-red-900/40 rounded-2xl p-5 fade-up">
+          <div class="text-2xl mb-3">🎓</div>
+          <div class="font-semibold mb-1">Professores e Mentores</div>
+          <div class="text-gray-400">Buscam uma forma prática de estruturar aulas, materiais e trilhas de aprendizado.</div>
+        </div>
+        <div class="bg-gray-950 border border-red-900/40 rounded-2xl p-5 fade-up">
+          <div class="text-2xl mb-3">🚀</div>
+          <div class="font-semibold mb-1">Empreendedores Digitais</div>
+          <div class="text-gray-400">Querem criar, organizar e lançar produtos digitais com estratégia.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMO FUNCIONA -->
+  <section class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-12 fade-up">
+        <h2 class="text-3xl md:text-4xl font-bold mb-3">Como funciona na prática?</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">
+          Em poucos passos, você sai do zero e começa a estudar, criar e organizar seus projetos dentro do AFFriend Code.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-4 gap-6 text-sm">
+        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-5 fade-up">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-semibold text-primary uppercase tracking-wide">Passo 1</span>
+            <i class="fa-solid fa-user-plus text-primary"></i>
+          </div>
+          <div class="font-semibold mb-1">Crie sua conta</div>
+          <div class="text-gray-600">Leva menos de 1 minuto. Sem cartão de crédito, sem burocracia.</div>
+        </div>
+        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-5 fade-up">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-semibold text-primary uppercase tracking-wide">Passo 2</span>
+            <i class="fa-solid fa-code text-primary"></i>
+          </div>
+          <div class="font-semibold mb-1">Acesse o editor e as ferramentas</div>
+          <div class="text-gray-600">Escolha entre estudar programação, organizar pautas ou explorar materiais.</div>
+        </div>
+        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-5 fade-up">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-semibold text-primary uppercase tracking-wide">Passo 3</span>
+            <i class="fa-solid fa-diagram-project text-primary"></i>
+          </div>
+          <div class="font-semibold mb-1">Organize seus projetos</div>
+          <div class="text-gray-600">Crie mini pautas, trilhas de estudo, funis e planos de conteúdo.</div>
+        </div>
+        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-5 fade-up">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-semibold text-primary uppercase tracking-wide">Passo 4</span>
+            <i class="fa-solid fa-rocket text-primary"></i>
+          </div>
+          <div class="font-semibold mb-1">Aplique e lance</div>
+          <div class="text-gray-600">Use o que criou para dar aulas, vender produtos ou crescer sua presença digital.</div>
+        </div>
+      </div>
+
+      <div class="text-center mt-10 fade-up">
+        <a href="login.html" class="btn-hover bg-primary text-white px-10 py-3 rounded-full text-base font-semibold">
+          Começar agora gratuitamente
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEPOIMENTOS -->
+  <section id="depoimentos" class="py-20 bg-gray-900 text-gray-100">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-12 fade-up">
+        <h2 class="text-3xl md:text-4xl font-bold mb-3">Resultados de quem aplica</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto">
+          Depoimentos de alunos e profissionais que começaram a organizar seus estudos, conteúdos e projetos com o AFFriend Code.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 text-sm">
+        <div class="bg-gray-950 border border-red-900/40 rounded-2xl p-6 fade-up">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-9 h-9 rounded-full bg-primary/30 flex items-center justify-center text-white">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <div>
+              <div class="font-semibold">João M.</div>
+              <div class="text-xs text-gray-400">Estudante de Programação</div>
+            </div>
+          </div>
+          <p class="text-gray-300">
+            “O AFFriend Code mudou completamente minha forma de estudar. Ver o código funcionando em tempo real me ajudou a
+            entender muito mais rápido.”
+          </p>
+        </div>
+
+        <div class="bg-gray-950 border border-red-900/40 rounded-2xl p-6 fade-up">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-9 h-9 rounded-full bg-primary/30 flex items-center justify-center text-white">
+              <i class="fa-solid fa-user-tie"></i>
+            </div>
+            <div>
+              <div class="font-semibold">Carla F.</div>
+              <div class="text-xs text-gray-400">Empreendedora Digital</div>
+            </div>
+          </div>
+          <p class="text-gray-300">
+            “Finalmente consegui organizar minhas ideias, funis e conteúdos em um só lugar. Hoje tenho clareza do que postar e
+            do que vender.”
+          </p>
+        </div>
+
+        <div class="bg-gray-950 border border-red-900/40 rounded-2xl p-6 fade-up">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-9 h-9 rounded-full bg-primary/30 flex items-center justify-center text-white">
+              <i class="fa-solid fa-chalkboard-user"></i>
+            </div>
+            <div>
+              <div class="font-semibold">Marcos L.</div>
+              <div class="text-xs text-gray-400">Professor</div>
+            </div>
+          </div>
+          <p class="text-gray-300">
+            “Uso o sistema de mini pautas para planejar minhas aulas semanais. Ficou muito mais fácil manter consistência e
+            qualidade.”
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANOS -->
+  <section id="planos" class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-12 fade-up">
+        <h2 class="text-3xl md:text-4xl font-bold mb-3">Planos e Acesso</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">
+          Comece gratuitamente e acompanhe a evolução da plataforma. Novas ferramentas, materiais e recursos serão liberados
+          continuamente.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Plano Gratuito -->
+        <div class="border border-gray-200 rounded-3xl p-8 bg-gray-50 fade-up">
+          <div class="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-2">Comece agora</div>
+          <h3 class="text-2xl font-bold mb-2">Plano Gratuito</h3>
+          <p class="text-gray-600 mb-4">Ideal para quem está começando e quer conhecer o ecossistema AFFriend Code.</p>
+          <div class="text-3xl font-bold mb-1">Kz 0</div>
+          <div class="text-xs text-gray-500 mb-6">Acesso imediato, sem cartão de crédito.</div>
+          <ul class="space-y-2 text-sm text-gray-700 mb-6">
+            <li><i class="fa-solid fa-check text-primary mr-2"></i>Acesso ao AFFriend Code Editor</li>
+            <li><i class="fa-solid fa-check text-primary mr-2"></i>Uso do sistema de mini pautas</li>
+            <li><i class="fa-solid fa-check text-primary mr-2"></i>Materiais didáticos básicos</li>
+            <li><i class="fa-solid fa-check text-primary mr-2"></i>Atualizações contínuas da plataforma</li>
+          </ul>
+          <button onclick="location.href='login.html'" 
+                  class="w-full bg-primary text-white py-3 rounded-2xl font-semibold hover:bg-red-600">
+            Criar Conta Grátis
+          </button>
+        </div>
+
+        <!-- Plano Premium -->
+        <div class="border border-red-300 rounded-3xl p-8 bg-gradient-to-br from-white via-red-50 to-red-100 fade-up">
+          <div class="text-xs font-semibold text-primary uppercase tracking-[0.2em] mb-2">Em breve</div>
+          <h3 class="text-2xl font-bold mb-2">Plano Premium</h3>
+          <p class="text-gray-700 mb-4">
+            Para quem quer acesso completo a materiais avançados, funis prontos, templates profissionais e recursos extras.
+          </p>
+          <div class="text-3xl font-bold mb-1">Em desenvolvimento</div>
+          <div class="text-xs text-gray-600 mb-6">Seja avisado quando o plano premium for lançado.</div>
+          <ul class="space-y-2 text-sm text-gray-800 mb-6">
+            <li><i class="fa-solid fa-check text-primary mr-2"></i>Templates avançados de funis e lançamentos</li>
+            <li><i class="fa-solid fa-check text-primary mr-2"></i>Biblioteca ampliada de materiais didáticos</li>
+            <li><i class="fa-solid fa-check text-primary mr-2"></i>Recursos extras no editor e nas mini pautas</li>
+            <li><i class="fa-solid fa-check text-primary mr-2"></i>Suporte prioritário</li>
+          </ul>
+          <button 
+            class="w-full border border-primary text-primary py-3 rounded-2xl font-semibold hover:bg-primary hover:text-white">
+            Quero ser avisado
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="py-16 bg-gray-950 text-gray-100">
+    <div class="max-w-4xl mx-auto px-6 text-center fade-up">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">Pronto para dar o próximo passo?</h2>
+      <p class="text-gray-300 mb-6">
+        Crie sua conta gratuita, explore o editor, organize suas mini pautas e comece a construir seus projetos digitais com
+        clareza e estratégia.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="login.html" 
+           class="btn-hover bg-primary text-white px-10 py-3 rounded-full text-base font-semibold">
+          Criar Conta Grátis
+        </a>
+        <a href="dashboard.html" 
+           class="btn-hover border border-gray-500 text-gray-100 px-8 py-3 rounded-full text-base font-semibold">
+          Ver o Editor Agora
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-900 text-gray-400 pt-16 pb-10">
+    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-4 gap-10">
+      <div>
+        <h3 class="text-white text-xl font-semibold mb-4">Professor Abraão Figueira</h3>
+        <p class="text-sm mb-4">Formação prática com foco em resultados reais.</p>
+        <p class="text-xs text-gray-500">Luanda, Angola</p>
+      </div>
+      <div>
+        <h4 class="text-white font-medium mb-4">Plataforma</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="dashboard.html" class="hover:text-white">Editor de Código</a></li>
+          <li><a href="explorar.html" class="hover:text-white">Marketplace</a></li>
+          <li><a href="cursos.html" class="hover:text-white">Cursos</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-medium mb-4">Legal</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="termos.html" class="hover:text-white">Termos de Uso</a></li>
+          <li><a href="politicas.html" class="hover:text-white">Política de Privacidade</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-medium mb-4">Fique por dentro</h4>
+        <p class="text-sm mb-3">Receba novidades sobre materiais, ferramentas e lançamentos.</p>
+        <form class="flex gap-2 mb-4">
+          <input type="email" placeholder="Seu e-mail" 
+                 class="w-full px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-sm text-gray-100 focus:outline-none focus:border-primary"/>
+          <button type="button" 
+                  class="px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-red-600">
+            Enviar
+          </button>
+        </form>
+        <div class="flex gap-5 text-2xl">
+          <a href="https://www.facebook.com/affriend.net" class="hover:text-white"><i class="fab fa-facebook"></i></a>
+          <a href="https://www.tiktok.com/@affriend7" class="hover:text-white"><i class="fab fa-tiktok"></i></a>
+          <a href="https://wa.me/244950961025" class="hover:text-white"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://t.me/IAFFriend8" class="hover:text-white"><i class="fab fa-telegram"></i></a>
+          </div>
+      </div>
+    </div>
+    <div class="text-center text-xs mt-10 border-t border-gray-800 pt-6">
+      © 2026 Professor Abraão Figueira • AFFriend Code • Todos os direitos reservados
+    </div>
+  </footer>
 
   <script>
-    // Validação simples no frontend (podes integrar Firebase depois)
-    document.getElementById("resetForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-
-      const password = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
-
-      if (password.length < 6) {
-        alert("A senha deve ter pelo menos 6 caracteres.");
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        alert("As senhas não coincidem.");
-        return;
-      }
-
-      alert("Senha alterada com sucesso! (Esta é uma simulação. Integre com Firebase Authentication.)");
-      // Aqui entraria o código real do Firebase para atualizar a senha
-        
-        <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-
-<script>
-  // Config do teu Firebase (copia do teu projeto)
-  const firebaseConfig = {
-    apiKey: "AIzaSyBPwZfzPx3sphRihEn3Lq9-kdl7v90E3IQ",
-    authDomain: "affriend-191815.firebaseapp.com",
-    databaseURL: "https://affriend-191815.firebaseio.com",
-    projectId: "affriend-191815",
-    storageBucket: "affriend-191815.firebasestorage.app",
-    messagingSenderId: "119765669625",
-    appId: "1:119765669625:web:b31ba888b91834a88b3428",
-    measurementId: "G-NVCVEW81PF"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-
-  document.getElementById("resetForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
-
-    if (password.length < 6) {
-      alert("A senha deve ter pelo menos 6 caracteres.");
-      return;
+    // Dark mode opcional via localStorage
+    if (localStorage.getItem("darkMode") === "true") {
+      document.documentElement.classList.add("dark");
     }
 
-    if (password !== confirmPassword) {
-      alert("As senhas não coincidem.");
-      return;
-    }
+    // Animação de fade-up ao rolar
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+        }
+      });
+    }, { threshold: 0.15 });
 
-    // Pega o oobCode da URL do email
-    const urlParams = new URLSearchParams(window.location.search);
-    const oobCode = urlParams.get('oobCode');
-
-    if (!oobCode) {
-      alert("Link inválido ou expirado.");
-      return;
-    }
-
-    firebase.auth().confirmPasswordReset(oobCode, password)
-    .then(() => {
-      alert("Senha alterada com sucesso! Pode fazer login agora.");
-      // Opcional: redireciona para tela de login
-      window.location.href = "https://teu-app.com/login";
-    })
-    .catch(err => {
-      alert("Erro: " + err.message);
-    });
-  });
-    });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
   </script>
+  
+  <!-- Botão Flutuante AFFriend IA -->
+<a href="affriendia.html" 
+   class="fixed bottom-6 right-6 bg-red-600 text-white rounded-full shadow-lg px-5 py-3 flex items-center gap-3 hover:bg-red-700 transition transform hover:scale-110 z-50"
+   title="Abrir AFFriend IA">
+  <i class="fas fa-robot text-2xl"></i>
+  <span class="font-semibold">Chat AFFriend IA</span>
+</a>
 </body>
 </html>

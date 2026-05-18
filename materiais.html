@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Materiais Didáticos - AFFriend Code</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+
+<body class="bg-gray-50">
+
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur border-b border-red-900/40">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg">
+          AF
+        </div>
+        <div class="leading-tight">
+          <div class="text-white font-semibold text-sm md:text-base">Professor Abraão Figueira</div>
+          <div class="text-xs text-gray-400">AFFriend Code Platform</div>
+        </div>
+      </div>
+      
+      <div class="text-gray-300 text-sm hidden md:block">
+        <a href="dashboard.html" class="hover:text-white">Editor</a>
+      </div>
+      <div class="text-gray-300 text-sm hidden md:block">
+        <a href="mensagens.html" class="hover:text-white">Mensagens</a>
+      </div>
+      <div class="text-gray-300 text-sm hidden md:block">
+        <a href="notificacoes.html" class="hover:text-white">Notificações</a>
+      </div>
+      <div class="text-gray-300 text-sm hidden md:block">
+        <a href="my-activity.html" class="hover:text-white">Actividades</a>
+      </div>
+      <div class="text-gray-300 text-sm hidden md:block">
+        <a href="produtos.html" class="hover:text-white">Produtos</a>
+      </div>
+    </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm text-gray-300">
+        <a href="index.html" class="hover:text-white">Início</a>
+        <a href="cursos.html" class="hover:text-white">Cursos</a>
+        <a href="explorar.html" class="hover:text-white">Marketplace</a>
+        <a href="materiais.html" class="hover:text-white">Materiais</a>
+      <a href="login.html" class="bg-red-600 text-white px-4 md:px-6 py-2 rounded-full text-sm font-semibold hover:bg-red-500">
+        Criar Conta Grátis
+      </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="bg-gradient-to-r from-red-700 to-red-900 text-white pt-24 pb-16">
+    <div class="max-w-6xl mx-auto px-6 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold">Materiais Didáticos</h1>
+      <p class="text-lg md:text-xl mt-4">Baixe materiais de apoio, PDFs, apresentações e documentos.</p>
+    </div>
+  </section>
+
+  <!-- LISTA DE MATERIAIS -->
+  <section class="max-w-6xl mx-auto px-6 py-16">
+
+    <div id="listaMateriais" class="grid md:grid-cols-3 gap-8">
+      <!-- Materiais via JS -->
+    </div>
+
+    <p id="semMateriais" class="text-center text-gray-500 mt-10 hidden">
+      Nenhum material disponível no momento.
+    </p>
+
+  </section>
+
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    const db = firebase.database();
+
+    db.ref("materials").on("value", snap => {
+      const lista = document.getElementById("listaMateriais");
+      const vazio = document.getElementById("semMateriais");
+
+      lista.innerHTML = "";
+
+      if (!snap.exists()) {
+        vazio.classList.remove("hidden");
+        return;
+      }
+
+      vazio.classList.add("hidden");
+
+      snap.forEach(child => {
+        const m = child.val();
+
+        const icons = {
+          pdf: "fa-file-pdf text-red-600",
+          doc: "fa-file-word text-blue-600",
+          docx: "fa-file-word text-blue-600",
+          ppt: "fa-file-powerpoint text-orange-600",
+          pptx: "fa-file-powerpoint text-orange-600",
+          zip: "fa-file-zipper text-yellow-600",
+          jpg: "fa-file-image text-green-600",
+          png: "fa-file-image text-green-600",
+          default: "fa-file text-gray-600"
+        };
+
+        const icon = icons[m.fileType] || icons.default;
+
+        const card = `
+          <div class="bg-white rounded-3xl p-8 shadow hover:shadow-xl transition flex flex-col">
+
+            <div class="text-6xl mb-6">
+              <i class="fa-solid ${icon}"></i>
+            </div>
+
+            <h3 class="text-2xl font-semibold">${m.title}</h3>
+            <p class="text-gray-600 my-4 line-clamp-3">${m.description}</p>
+
+            <button onclick="window.open('${m.fileUrl}', '_blank')"
+              class="mt-auto w-full bg-red-600 text-white py-3 rounded-2xl font-medium hover:bg-red-500">
+              Baixar Material
+            </button>
+
+          </div>
+        `;
+
+        lista.insertAdjacentHTML("beforeend", card);
+      });
+    });
+  </script>
+
+</body>
+</html>

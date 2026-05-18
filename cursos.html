@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cursos - AFFriend Code</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+
+<body class="bg-gray-50">
+
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur border-b border-red-900/40">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg">
+          AF
+        </div>
+        <div class="leading-tight">
+          <div class="text-white font-semibold text-sm md:text-base">Professor Abraão Figueira</div>
+          <div class="text-xs text-gray-400">AFFriend Code Platform</div>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm text-gray-300">
+        <a href="produtos.html" class="hover:text-white">Produtos</a>
+        <a href="cursos.html" class="hover:text-white">Cursos</a>
+        <a href="explorar.html" class="hover:text-white">Marketplace</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="login.html" class="hidden md:inline-block text-sm text-gray-200 hover:text-white">Entrar</a>
+        <a href="login.html" class="bg-red-600 text-white px-4 md:px-6 py-2 rounded-full text-sm font-semibold hover:bg-red-500">
+          Criar Conta Grátis
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="bg-gradient-to-r from-red-700 to-red-900 text-white pt-24 pb-16">
+    <div class="max-w-6xl mx-auto px-6 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold">Cursos Disponíveis</h1>
+      <p class="text-lg md:text-xl mt-4">Explore o curso que mais combina contigo.</p>
+    </div>
+  </section>
+
+  <!-- LISTA DE CURSOS -->
+  <section class="max-w-6xl mx-auto px-6 py-16">
+    <h2 class="text-2xl font-semibold mb-6 text-gray-800">Aprenda com os melhores conteúdos</h2>
+
+    <div id="cursosContainer" class="grid md:grid-cols-3 gap-8">
+      <!-- Cursos serão inseridos via JS -->
+    </div>
+
+    <p id="semCursos" class="text-gray-500 text-center mt-10 hidden">
+      Ainda não há cursos cadastrados. Volte mais tarde.
+    </p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-900 text-gray-400 py-16 mt-10">
+    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-4 gap-10">
+      <div>
+        <h3 class="text-white text-xl font-semibold mb-4">Professor Abraão Figueira</h3>
+        <p class="text-sm">Formação prática com foco em resultados reais.</p>
+      </div>
+      <div>
+        <h4 class="text-white font-medium mb-4">Links Rápidos</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="dashboard.html" class="hover:text-white">Editor de Código</a></li>
+          <li><a href="explorar.html" class="hover:text-white">Marketplace</a></li>
+          <li><a href="cursos.html" class="hover:text-white">Cursos</a></li>
+          <li><a href="materiais.html" class="hover:text-white">Materiais</a></li>
+          
+          <li><a href="perfil.html" class="hover:text-white">Perfil</a></li>
+          <li><a href="mensagens.html" class="hover:text-white">Mensagens</a></li>
+          <li><a href="my-activity.html" class="hover:text-white">Actividades</a></li>
+          <li><a href="produtos.html" class="hover:text-white">Produtos</a></li>
+          <li><a href="affriendia.html" class="hover:text-white">AFFriend IA</a></li>
+        
+          <li><a href="aulas.html" class="hover:text-white">Aulas</a></li>
+          <li><a href="comunidade.html" class="hover:text-white">Comunidade</a></li>
+          <li><a href="sobre.html" class="hover:text-white">Sobre</a></li>
+             </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-medium mb-4">Legal</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="termos.html" class="hover:text-white">Termos de Uso</a></li>
+          <li><a href="politicas.html" class="hover:text-white">Política de Privacidade</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-medium mb-4">Redes Sociais</h4>
+        <div class="flex gap-6 text-3xl">
+          <a href="https://www.facebook.com/affriend.net" class="hover:text-white"><i class="fab fa-facebook"></i></a>
+          <a href="https://www.tiktok.com/@affriend7" class="hover:text-white"><i class="fab fa-tiktok"></i></a>
+          <a href="https://wa.me/244950961025" class="hover:text-white"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://t.me/IAFFriend8" class="hover:text-white"><i class="fab fa-telegram"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="text-center text-sm mt-12 border-t border-gray-800 pt-8">
+      © 2026 Professor Abraão Figueira • Todos os direitos reservados
+    </div>
+  </footer>
+
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    const db = firebase.database();
+
+    db.ref("courses").on("value", snap => {
+      const container = document.getElementById("cursosContainer");
+      const sem = document.getElementById("semCursos");
+      container.innerHTML = "";
+
+      if (!snap.exists()) {
+        sem.classList.remove("hidden");
+        return;
+      }
+
+      sem.classList.add("hidden");
+
+      snap.forEach(child => {
+        const c = child.val();
+
+        const thumb = c.thumbnail || "";
+        const emoji = c.emoji || "📘";
+        const title = c.title || "Curso sem título";
+        const desc = c.description || "Sem descrição.";
+        const price = c.price || 0;
+
+        const card = `
+          <div class="bg-white rounded-3xl p-8 shadow hover:shadow-xl transition flex flex-col">
+            <div class="text-6xl mb-6">${emoji}</div>
+
+            <h3 class="text-2xl font-semibold">${title}</h3>
+            <p class="text-gray-600 my-4 line-clamp-3">${desc}</p>
+
+            <div class="mt-auto">
+              <div class="text-3xl font-bold text-red-600 mb-4">Kz ${price}</div>
+
+              <button onclick="location.href='curso-detalhes.html?id=${child.key}'"
+                class="w-full bg-red-600 text-white py-3 rounded-2xl font-medium hover:bg-red-500">
+                Ver Curso
+              </button>
+            </div>
+          </div>
+        `;
+
+        container.insertAdjacentHTML("beforeend", card);
+      });
+    });
+  </script>
+
+  
+  <!-- Botão Flutuante AFFriend IA -->
+<a href="affriendia.html" 
+   class="fixed bottom-6 right-6 bg-red-600 text-white rounded-full shadow-lg px-5 py-3 flex items-center gap-3 hover:bg-red-700 transition transform hover:scale-110 z-50"
+   title="Abrir AFFriend IA">
+  <i class="fas fa-robot text-2xl"></i>
+  <span class="font-semibold">Chat AFFriend IA</span>
+</a>
+</body>
+</html>

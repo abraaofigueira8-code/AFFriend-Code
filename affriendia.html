@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AFFriend IA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body class="flex flex-col min-h-screen bg-white">
+
+  <!-- Header Premium -->
+  <header class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-red-600">AFFriend IA</h1>
+    <nav class="flex gap-6 text-gray-700 font-medium">
+      <a href="#" class="hover:text-red-600 transition"><i class="fas fa-book"></i></a>
+      <a href="#" class="hover:text-red-600 transition"><i class="fas fa-box"></i></a>
+      <a href="#" class="hover:text-red-600 transition"><i class="fas fa-store"></i></a>
+      <a href="#" class="hover:text-red-600 transition"><i class="fas fa-comment-dots"></i></a>
+      <a href="#" class="hover:text-red-600 transition"><i class="fas fa-cog"></i></a>
+    </nav>
+  </header>
+
+  <!-- Chat Premium -->
+  <main class="flex-1 flex flex-col">
+    <div id="chat" class="flex-1 p-6 overflow-y-auto bg-gray-50"></div>
+
+    <div class="p-4 bg-gray-100 flex gap-3 border-t border-gray-300">
+      <input 
+        type="text" 
+        id="userInput" 
+        placeholder="Digite sua pergunta..." 
+        class="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
+      />
+      <button 
+        onclick="sendMessage()" 
+        class="px-6 py-3 bg-red-600 text-white font-semibold rounded-lg shadow hover:bg-red-700 transition flex items-center gap-2">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </main>
+
+  <!-- Footer Premium -->
+  <footer class="bg-gradient-to-r from-black via-red-700 to-black text-white py-10 mt-10 border-t-4 border-red-500">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+      
+      <!-- Texto -->
+      <div class="text-center md:text-left">
+        <h2 class="text-xl font-bold text-red-400">AFFriend Code</h2>
+        <p class="text-sm text-gray-200 mt-2">Plataforma premium para cursos, projetos e marketplace.</p>
+        <p class="text-xs text-gray-400 mt-1">© 2026 AFFriend Code. Todos os direitos reservados.</p>
+      </div>
+
+      <!-- Botão Download -->
+      <div class="text-center">
+        <a href="/downloads/AFFriendCode-v1.0.0.apk" download
+           class="inline-flex items-center gap-3 bg-white text-black px-6 py-3 rounded-full font-semibold shadow hover:bg-red-600 hover:text-white transition">
+          <i class="fab fa-android text-2xl"></i> Baixar APK Android
+        </a>
+        <p class="text-xs text-gray-300 mt-2">Versão 1.0.0 • 18 MB</p>
+      </div>
+
+      <!-- Links rápidos -->
+      <div class="flex gap-4 text-sm">
+        <a href="#" class="hover:text-red-400 transition">Política de Privacidade</a>
+        <a href="#" class="hover:text-red-400 transition">Termos de Uso</a>
+        <a href="#" class="hover:text-red-400 transition">Suporte</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script Chat -->
+  <script>
+    const chat = document.getElementById("chat");
+    const userInput = document.getElementById("userInput");
+
+    function addMessage(text, isUser) {
+      const div = document.createElement("div");
+      div.className = `mb-4 max-w-xl px-4 py-3 rounded-lg shadow transition ${
+        isUser 
+          ? 'bg-red-600 text-white ml-auto animate-slideInRight' 
+          : 'bg-gray-100 text-black mr-auto animate-slideInLeft'
+      }`;
+      div.textContent = text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function addThinking() {
+      const id = "thinking-" + Date.now();
+      const div = document.createElement("div");
+      div.id = id;
+      div.className = "mr-auto bg-gray-200 text-gray-700 px-4 py-3 rounded-lg shadow animate-pulse";
+      div.textContent = "AFFriend está pensando...";
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+      return id;
+    }
+
+    function removeThinking(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    }
+
+    async function sendMessage() {
+      const question = userInput.value.trim();
+      if (!question) return;
+
+      addMessage(question, true);
+      userInput.value = "";
+
+      const thinkingId = addThinking();
+
+      try {
+        let type = "code";
+        if (question.toLowerCase().includes("imagem") || question.toLowerCase().includes("foto")) {
+          type = "image";
+        }
+
+        const response = await fetch("/api/gemini", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type, prompt: question })
+        });
+
+        const data = await response.json();
+        removeThinking(thinkingId);
+
+        if (type === "image") {
+          const imgContainer = document.createElement("div");
+          imgContainer.className = "mr-auto bg-gray-50 p-3 rounded-lg shadow animate-fadeIn";
+          const img = document.createElement("img");
+          img.src = data.output;
+          img.alt = "Imagem gerada pela IA";
+          img.className = "rounded-lg shadow-lg max-w-full";
+          imgContainer.appendChild(img);
+          chat.appendChild(imgContainer);
+        } else {
+          addMessage(data.output, false);
+        }
+
+        chat.scrollTop = chat.scrollHeight;
+
+      } catch (error) {
+        removeThinking(thinkingId);
+        addMessage("Erro ao conectar com AFFriend IA. Tente novamente mais tarde.", false);
+        console.error("Erro:", error);
+      }
+    }
+
+    userInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+
+  <!-- Animations -->
+  <style>
+    @keyframes slideInRight {
+      from { transform: translateX(50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideInLeft {
+      from { transform: translateX(-50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .animate-slideInRight { animation: slideInRight 0.4s ease-out; }
+    .animate-slideInLeft { animation: slideInLeft 0.4s ease-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .animate-fadeIn { animation: fadeIn 0.6s ease-in; }
+  </style>
+</body>
+</html>

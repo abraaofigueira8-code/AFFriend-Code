@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova Senha — AFFriend</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: #fff;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .reset-container {
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+  }
+
+  .reset-card {
+    background: #111;
+    padding: 35px;
+    border-radius: 14px;
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.15);
+    text-align: center;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 700;
+  }
+
+  .subtitle {
+    margin: 8px 0 25px;
+    color: #bbb;
+    font-size: 14px;
+  }
+
+  .input-group {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .input-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 15px;
+    outline: none;
+    transition: 0.2s;
+  }
+
+  .input-group input:focus {
+    border-color: #ff0033;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    background: #ff0033;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #fff;
+    transition: 0.2s;
+  }
+
+  button:hover {
+    background: #e6002e;
+  }
+
+  .feedback {
+    margin-top: 15px;
+    font-size: 14px;
+    min-height: 20px;
+  }
+
+  .back {
+    display: block;
+    margin-top: 20px;
+    color: #ff0033;
+    text-decoration: none;
+    font-size: 14px;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="reset-container">
+  <div class="reset-card">
+
+    <h2>Definir nova senha</h2>
+    <p class="subtitle">Digite sua nova senha abaixo.</p>
+
+    <div class="input-group">
+      <input type="password" id="newPassword" placeholder="Nova senha" required>
+    </div>
+
+    <div class="input-group">
+      <input type="password" id="confirmPassword" placeholder="Confirmar senha" required>
+    </div>
+
+    <button onclick="confirmNewPassword()">Salvar nova senha</button>
+
+    <p id="feedback" class="feedback"></p>
+
+    <a href="login.html" class="back">Voltar ao login</a>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+<script>
+  // CONFIGURAÇÃO DO TEU FIREBASE
+  const firebaseConfig = {
+    apiKey: "SUA_API_KEY",
+    authDomain: "SEU_AUTH_DOMAIN",
+    projectId: "SEU_PROJECT_ID",
+    storageBucket: "SEU_BUCKET",
+    messagingSenderId: "SEU_SENDER_ID",
+    appId: "SEU_APP_ID"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  // PEGAR O CÓDIGO DA URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const oobCode = urlParams.get("oobCode");
+
+  function confirmNewPassword() {
+    const newPass = document.getElementById("newPassword").value;
+    const confirmPass = document.getElementById("confirmPassword").value;
+    const feedback = document.getElementById("feedback");
+
+    if (newPass !== confirmPass) {
+      feedback.style.color = "#ff0033";
+      feedback.textContent = "As senhas não coincidem.";
+      return;
+    }
+
+    firebase.auth().confirmPasswordReset(oobCode, newPass)
+      .then(() => {
+        feedback.style.color = "#4CAF50";
+        feedback.textContent = "Senha redefinida com sucesso!";
+      })
+      .catch(error => {
+        feedback.style.color = "#ff0033";
+        feedback.textContent = "Erro: " + error.message;
+      });
+  }
+</script>
+
+</body>
+</html>

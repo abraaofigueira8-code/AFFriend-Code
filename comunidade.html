@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Comunidade Avançada - AFFriend Code</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+
+<body class="bg-gray-50">
+
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur border-b border-red-900/40">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg">AF</div>
+        <div class="leading-tight">
+          <div class="text-white font-semibold text-sm md:text-base">AFFriend Code</div>
+          <div class="text-xs text-gray-400">Comunidade Avançada</div>
+        </div>
+      </div>
+      <a href="editor.html" class="text-gray-300 hover:text-white text-sm">Editor</a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="bg-gradient-to-r from-red-700 to-red-900 text-white pt-24 pb-16">
+    <div class="max-w-6xl mx-auto px-6 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold">Comunidade Avançada</h1>
+      <p class="text-lg md:text-xl mt-4">Interaja com projetos da comunidade AFFriend.</p>
+    </div>
+  </section>
+
+  <!-- FILTROS -->
+  <section class="max-w-6xl mx-auto px-6 mt-10">
+    <div class="bg-white shadow rounded-3xl p-6 flex flex-col md:flex-row gap-6 items-center">
+
+      <input id="busca" type="text" placeholder="Pesquisar projetos..."
+        class="flex-1 p-3 border rounded-xl w-full"/>
+
+      <select id="ordenar" class="p-3 border rounded-xl">
+        <option value="recentes">Mais recentes</option>
+        <option value="curtidos">Mais curtidos</option>
+        <option value="populares">Mais vistos</option>
+      </select>
+
+    </div>
+  </section>
+
+  <!-- FEED -->
+  <section class="max-w-6xl mx-auto px-6 py-16">
+    <div id="feed" class="grid md:grid-cols-3 gap-8"></div>
+    <p id="vazio" class="text-center text-gray-500 mt-10 hidden">Nenhum projeto encontrado.</p>
+  </section>
+
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    const db = firebase.database();
+    const auth = firebase.auth();
+
+    let userId = null;
+    let projetos = [];
+
+    auth.onAuthStateChanged(user => {
+      if (!user) return location.href = "login.html";
+      userId = user.uid;
+      carregarProjetos();
+    });
+
+    function carregarProjetos() {
+      db.ref("public_projects").on("value", snap => {
+        projetos = [];
+        snap.forEach(child => {
+          projetos.push({ id: child.key, ...child.val() });
+        });
+        render();
+      });
+    }
+
+    async function getLikes(id) {
+      const snap = await db.ref("likes/" + id).get();
+      return snap.exists() ? snap.size : 0;
+    }
+
+    async function getViews(id) {
+      const snap = await db.ref("views/" + id).get();
+      return snap.exists() ? snap.val() : 0;
+    }
+
+    async function render() {
+      const feed = document.getElementById("feed");
+      const vazio = document.getElementById("vazio");
+      const termo = document.getElementById("busca").value.toLowerCase();
+      const ordenar = document.getElementById("ordenar").value;
+
+      feed.innerHTML = "";
+
+      let dados = [...projetos];
+
+      // Busca
+      if (termo) {
+        dados = dados.filter(x => (x.title || "").toLowerCase().includes(termo));
+      }
+
+      // Ordenação
+      if (ordenar === "recentes") {
+        dados.sort((a, b) => b.createdAt - a.createdAt);
+      }
+
+      if (ordenar === "curtidos") {
+        for (let p of dados) p.likes = await getLikes(p.id);
+        dados.sort((a, b) => b.likes - a.likes);
+      }
+
+      if (ordenar === "populares") {
+        for (let p of dados) p.views = await getViews(p.id);
+        dados.sort((a, b) => b.views - a.views);
+      }
+
+      if (dados.length === 0) {
+        vazio.classList.remove("hidden");
+        return;
+      }
+
+      vazio.classList.add("hidden");
+
+      for (let p of dados) {
+        const likes = await getLikes(p.id);
+        const views = await getViews(p.id);
+
+        const card = `
+          <div class="bg-white rounded-3xl p-8 shadow hover:shadow-xl transition flex flex-col">
+
+            <div class="text-6xl mb-6">${p.emoji || "📦"}</div>
+
+            <h3 class="text-2xl font-semibold">${p.title}</h3>
+            <p class="text-gray-600 my-4 line-clamp-3">${p.description}</p>
+
+            <div class="flex justify-between text-gray-600 text-sm mt-2 mb-4">
+              <span><i class="fa-solid fa-eye"></i> ${views}</span>
+              <span><i class="fa-solid fa-heart text-red-600"></i> ${likes}</span>
+            </div>
+
+            <div class="flex gap-4 mt-auto">
+
+              <button onclick="curtir('${p.id}')"
+                class="text-red-600 hover:text-red-700 flex items-center gap-1">
+                <i class="fa-solid fa-heart"></i>
+              </button>
+
+              <button onclick="salvar('${p.id}')"
+                class="text-gray-600 hover:text-black flex items-center gap-1">
+                <i class="fa-solid fa-bookmark"></i>
+              </button>
+
+              <button onclick="location.href='comentarios.html?id=${p.id}'"
+                class="text-gray-600 hover:text-black flex items-center gap-1">
+                <i class="fa-solid fa-comment"></i>
+              </button>
+
+              <button onclick="abrirProjeto('${p.id}')"
+                class="ml-auto bg-red-600 text-white px-4 py-2 rounded-xl hover:bg-red-500">
+                Abrir
+              </button>
+
+            </div>
+
+          </div>
+        `;
+
+        feed.insertAdjacentHTML("beforeend", card);
+      }
+    }
+
+    function curtir(id) {
+      db.ref("likes/" + id + "/" + userId).set(true);
+      render();
+    }
+
+    function salvar(id) {
+      db.ref("saves/" + userId + "/" + id).set(true);
+      alert("Salvo nos favoritos!");
+    }
+
+    function abrirProjeto(id) {
+      db.ref("views/" + id).transaction(v => (v || 0) + 1);
+      location.href = "projeto.html?id=" + id;
+    }
+
+    document.getElementById("busca").oninput = render;
+    document.getElementById("ordenar").onchange = render;
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Minhas Vendas — AFFriend Code</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+
+<body class="bg-gray-50">
+
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur border-b border-red-900/40">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg">
+          AF
+        </div>
+        <div class="leading-tight">
+          <div class="text-white font-semibold text-sm md:text-base">Painel do Vendedor</div>
+          <div class="text-xs text-gray-400">AFFriend Code Platform</div>
+        </div>
+      </div>
+      <a href="dashboard.html" class="text-gray-300 hover:text-white text-sm">Voltar</a>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO -->
+  <main class="pt-28 pb-20 max-w-5xl mx-auto px-6">
+
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Minhas Vendas</h1>
+
+    <div id="loading" class="text-center text-gray-600 text-lg">
+      Carregando vendas...
+    </div>
+
+    <div id="listaVendas" class="hidden space-y-6"></div>
+
+    <div id="erro" class="hidden text-center text-red-600 text-lg font-semibold mt-10">
+      Nenhuma venda encontrada.
+    </div>
+
+  </main>
+
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    const db = firebase.database();
+    const auth = firebase.auth();
+
+    let sellerId = null;
+
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        alert("Faça login para continuar.");
+        location.href = "login.html";
+        return;
+      }
+
+      sellerId = user.uid;
+      carregarVendas();
+    });
+
+    function carregarVendas() {
+      db.ref("purchases").once("value").then(snap => {
+        document.getElementById("loading").classList.add("hidden");
+
+        if (!snap.exists()) {
+          document.getElementById("erro").classList.remove("hidden");
+          return;
+        }
+
+        const lista = document.getElementById("listaVendas");
+        lista.classList.remove("hidden");
+        lista.innerHTML = "";
+
+        snap.forEach(child => {
+          const venda = child.val();
+          const id = child.key;
+
+          if (venda.sellerId !== sellerId) return;
+
+          const statusColor =
+            venda.status === "approved" ? "text-green-600" :
+            venda.status === "rejected" ? "text-red-600" :
+            "text-yellow-600";
+
+          const card = document.createElement("div");
+          card.className = "bg-white shadow rounded-2xl p-6";
+
+          card.innerHTML = `
+            <div class="flex justify-between items-start">
+              <div>
+                <h2 class="text-xl font-semibold text-gray-900">${venda.title}</h2>
+                <p class="text-gray-600 text-sm">${venda.description}</p>
+                <p class="text-gray-800 font-bold mt-2">${venda.price} Kz</p>
+                <p class="mt-1 text-sm ${statusColor}">
+                  Status: <strong>${venda.status.toUpperCase()}</strong>
+                </p>
+                <p class="text-xs text-gray-500 mt-1">
+                  Método: ${venda.method}
+                </p>
+                <p class="text-xs text-gray-500">
+                  Comprador: ${venda.buyerId}
+                </p>
+              </div>
+
+              <a href="recibo.html?id=${id}"
+                class="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded-lg">
+                Ver Recibo
+              </a>
+            </div>
+
+            ${
+              venda.comprovativoBase64
+                ? `<button onclick="verComprovativo('${venda.comprovativoBase64}')"
+                     class="mt-4 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm hover:bg-black">
+                     Ver Comprovativo
+                   </button>`
+                : ""
+            }
+
+            <div class="flex gap-3 mt-4">
+              <button onclick="aprovar('${id}', '${venda.type}', '${venda.id}', '${venda.buyerId}')"
+                class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700">
+                Aprovar
+              </button>
+
+              <button onclick="rejeitar('${id}')"
+                class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700">
+                Rejeitar
+              </button>
+            </div>
+          `;
+
+          lista.appendChild(card);
+        });
+      });
+    }
+
+    function verComprovativo(base64) {
+      const win = window.open();
+      win.document.write(`<iframe src="${base64}" style="width:100%;height:100%"></iframe>`);
+    }
+
+    function aprovar(purchaseId, type, itemId, buyerId) {
+      db.ref("purchases/" + purchaseId + "/status").set("approved");
+
+      if (type === "curso") {
+        db.ref("userCourses/" + buyerId + "/" + itemId).set(true);
+      } else {
+        db.ref("userPurchases/" + buyerId + "/" + itemId).set(true);
+      }
+
+      alert("Compra aprovada e item liberado!");
+      location.reload();
+    }
+
+    function rejeitar(purchaseId) {
+      db.ref("purchases/" + purchaseId + "/status").set("rejected");
+      alert("Compra rejeitada.");
+      location.reload();
+    }
+  </script>
+
+  <!-- Botão Flutuante AFFriend IA -->
+<a href="affriendia.html" 
+   class="fixed bottom-6 right-6 bg-red-600 text-white rounded-full shadow-lg px-5 py-3 flex items-center gap-3 hover:bg-red-700 transition transform hover:scale-110 z-50"
+   title="Abrir AFFriend IA">
+  <i class="fas fa-robot text-2xl"></i>
+  <span class="font-semibold">Chat AFFriend IA</span>
+</a>
+</body>
+</html>

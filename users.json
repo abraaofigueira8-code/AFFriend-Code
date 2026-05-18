@@ -1,0 +1,15 @@
+{
+  "users": [
+    {
+      "localId": "GALasrv2cbY0o9PII2BEar912p72",
+      "email": "abraaofigueira8@gmail.com",
+      "emailVerified": false,
+      "passwordHash": "PvNQ2/weu2Jt0Ax1+FeA0217aYDa0eW",
+      "salt": "1i44sHiCdeid6A==",
+      "createdAt": "1778279905844",
+      "disabled": false,
+      "customClaims": "{\"admin\": true}",
+      "providerUserInfo": []
+    }
+  ]
+}

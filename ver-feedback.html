@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="google-adsense-account" content="ca-pub-3347055381425263">
+    <title>Ver Feedbacks - AFFriend Code</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+   
+
+  
+  <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KK3V6HWB');</script>
+<!-- End Google Tag Manager -->
+    
+  <style>
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: #f8f9fa; 
+        margin: 0; 
+        padding: 0px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { color: #ff3333; text-align: center; margin-bottom: 30px; }
+    .feedback-card {
+      background: white;
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+      border-left: 6px solid #ff3333;
+      position: relative;
+    }
+    .rating { font-size: 32px; color: #ffcc00; margin-bottom: 12px; letter-spacing: 4px; }
+    .comment { font-size: 16.5px; line-height: 1.65; color: #444; margin-bottom: 15px; }
+    .meta { font-size: 14px; color: #666; display: flex; justify-content: space-between; }
+    .delete-btn {
+      position: absolute; top: 15px; right: 15px;
+      background: #d32f2f; color: white; border: none;
+      width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-size: 18px;
+    }
+    .empty, .loading, .error {
+      text-align: center; padding: 80px 20px; color: #666; font-size: 18px;
+    }
+    .error { color: #d32f2f; }
+  
+   footer {
+      background: var(--dark);
+      color: #bbb;
+      text-align: center;
+      padding: 1px;
+      width:100%
+      
+    }
+  </style>
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KK3V6HWB"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+    
+  <div class="container">
+    <h1><i class="fas fa-comments"></i> Feedbacks dos Utilizadores</h1>
+    <div id="feedbackList"></div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+  // Aplicar tema salvo
+if (localStorage.getItem("darkMode") === "true") {
+  document.documentElement.setAttribute("data-theme", "dark");
+}
+    const ADMIN_EMAIL = "abraao8ac@gmail.com";   // ← Teu email exato
+
+    async function loadFeedbacks() {
+      const container = document.getElementById("feedbackList");
+      container.innerHTML = `<div class="loading">A carregar feedbacks...</div>`;
+
+      try {
+        const snapshot = await firebase.database().ref('feedbacks').once('value');
+        const feedbacks = snapshot.val();
+
+        if (!feedbacks || Object.keys(feedbacks).length === 0) {
+          container.innerHTML = `<div class="empty">Ainda não há feedbacks enviados.</div>`;
+          return;
+        }
+
+        container.innerHTML = "";
+
+        const sorted = Object.entries(feedbacks).sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+
+        sorted.forEach(([id, fb]) => {
+          const date = new Date(fb.timestamp || Date.now());
+          const formattedDate = date.toLocaleDateString('pt-PT', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+          });
+
+          // Verificação mais tolerante do email
+          const feedbackEmail = String(fb.userEmail || "").trim().toLowerCase();
+          const isAdmin = feedbackEmail === ADMIN_EMAIL.toLowerCase();
+
+          const card = document.createElement("div");
+          card.className = "feedback-card";
+
+          const stars = '★'.repeat(fb.rating || 0) + '☆'.repeat(5 - (fb.rating || 0));
+
+          let html = `
+            <div class="rating">${stars}</div>
+            <div class="comment">"${fb.comment || 'Sem comentário'}"</div>
+            <div class="meta">
+              <span><strong>${fb.userEmail || "Anônimo"}</strong></span>
+              <span>${formattedDate}</span>
+            </div>
+          `;
+
+          if (isAdmin) {
+            html = `<button class="delete-btn" onclick="deleteFeedback('${id}')">×</button>` + html;
+          }
+
+          card.innerHTML = html;
+          container.appendChild(card);
+        });
+
+      } catch (error) {
+        console.error(error);
+        container.innerHTML = `<div class="error">Erro ao carregar feedbacks.</div>`;
+      }
+    }
+
+    window.deleteFeedback = async function(id) {
+      if (!confirm("Eliminar este feedback permanentemente?")) return;
+      try {
+        await firebase.database().ref(`feedbacks/${id}`).remove();
+        loadFeedbacks();
+      } catch (e) {
+        alert("Erro ao eliminar.");
+      }
+    };
+
+    window.onload = loadFeedbacks;
+  </script>
+  
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-400 py-16">
+    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-4 gap-10">
+      <div>
+        <h3 class="text-white text-xl font-semibold mb-4">Professor Abraão Figueira</h3>
+        <p class="text-sm">Formação prática com foco em resultados reais.</p>
+      </div>
+      <div>
+        <h4 class="text-white font-medium mb-4">Links Rápidos</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="dashboard.html" class="hover:text-white">Editor de Código</a></li>
+          <li><a href="explorar.html" class="hover:text-white">Marketplace</a></li>
+          <li><a href="cursos.html" class="hover:text-white">Cursos</a></li>
+          <li><a href="Sobre.html" class="hover:text-white">Sobre</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-medium mb-4">Legal</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="termos.html" class="hover:text-white">Termos de Uso</a></li>
+          <li><a href="politicas.html" class="hover:text-white">Política de Privacidade</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-medium mb-4">Redes Sociais</h4>
+        <div class="flex gap-6 text-3xl">
+          <a href="#" class="hover:text-white"><i class="fab fa-facebook"></i></a>
+          <a href="#" class="hover:text-white"><i class="fab fa-tiktok"></i></a>
+          <a href="#" class="hover:text-white"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="hover:text-white"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="hover:text-white"><i class="fab fa-whatsapp"></i></a>
+          <a href="#" class="hover:text-white"><i class="fab fa-telegram"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="text-center text-sm mt-12 border-t border-gray-800 pt-8">
+      © 2026 Professor Abraão Figueira • Todos os direitos reservados
+    </div>
+  </footer>
+
+</body>
+</html>

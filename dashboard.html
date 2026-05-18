@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>AFFriend Code | Editor</title>
+  <link rel="stylesheet" href="global.css">
+  <!-- Scripts externos -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+     
+      <!-- CodeMirror -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+      <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<!-- Configuração -->
+<script src="firebase-config.js"></script>
+
+<!-- Teu código principal -->
+<script src="dashboard.js"></script>
+  <style>
+    /* APPBAR LIGHT */
+    .appbar-light {
+      height: 64px;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e5e5;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 80;
+    }
+    .appbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .appbar-logo {
+      width: 40px;
+      height: 40px;
+      background: #e60023;
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .appbar-title-main {
+      font-size: 16px;
+      font-weight: 700;
+      color: #222;
+    }
+    .appbar-title-sub {
+      font-size: 12px;
+      color: #777;
+      margin-top: -2px;
+      display: block;
+    }
+    .appbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-appbar {
+      background: transparent;
+      border: none;
+      font-size: 18px;
+      color: #555;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
+    .btn-appbar:hover {
+      background: #ffe6ea;
+      color: #e60023;
+    }
+    .avatar {
+      width: 36px;
+      height: 36px;
+      background: #ddd;
+      border-radius: 50%;
+      cursor: pointer;
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* SIDEBAR S3 */
+    .sidebar-s3 {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      height: 100vh;
+      background: #ffffff;
+      border-right: 1px solid #e5e5e5;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      transition: transform .3s ease;
+      transform: translateX(-100%);
+    }
+    .sidebar-s3-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sidebar-s3-header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #e60023;
+    }
+    .sidebar-s3-header p {
+      font-size: 12px;
+      color: #777;
+      margin-top: -4px;
+    }
+    .sidebar-s3-close {
+      background: transparent;
+      border: none;
+      font-size: 22px;
+      color: #444;
+      cursor: pointer;
+      padding: 6px;
+    }
+    .sidebar-s3-nav {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .sidebar-s3-nav button {
+      width: 100%;
+      padding: 12px;
+      background: #f8f8f8;
+      border-radius: 10px;
+      border: none;
+      text-align: left;
+      font-size: 14px;
+      color: #444;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+    .sidebar-s3-nav button:hover {
+      background: #e60023;
+      color: #fff;
+    }
+    .sidebar-s3-footer {
+      margin-top: auto;
+    }
+    .sidebar-s3-footer button {
+      width: 100%;
+      padding: 12px;
+      background: #e60023;
+      color: #fff;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* Overlay */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(2px);
+      z-index: 90;
+      opacity: 0;
+      transition: opacity .3s ease;
+    }
+    .sidebar-overlay-visible {
+      opacity: 1;
+    }
+    .hidden {
+      display: none;
+    }
+
+    /* Botão mobile */
+    .sidebar-s3-toggle {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      background: #e60023;
+      color: #fff;
+      border: none;
+      padding: 10px 12px;
+      border-radius: 8px;
+      z-index: 110;
+      cursor: pointer;
+    }
+
+    @media (min-width: 768px) {
+      .sidebar-s3 {
+        transform: translateX(0);
+      }
+      .sidebar-s3-toggle {
+        display: none;
+      }
+    }
+
+    /* Layout principal */
+    .main-content {
+      margin-left: 0;
+      padding: 16px;
+    }
+    @media (min-width: 768px) {
+      .main-content {
+        margin-left: 260px;
+      }
+    }
+
+    /* Editor básico (usa teu CSS depois) */
+    /* Editor mais fino */
+.editor-shell {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 40vh; /* altura fixa mais fina */
+}
+    .editor-header {
+      background: #f8f8f8;
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e5e5e5;
+      font-size: 14px;
+    }
+    ..editor-body {
+  display: flex;
+  flex-direction: column; /* empilha editor e preview */
+}
+
+.CodeMirror {
+  width: 100%;   /* editor ocupa toda a largura */
+  height: 300px; /* altura controlada */
+}
+
+.preview-frame-wrapper {
+  width: 100%;   /* preview também ocupa toda a largura */
+  height: 45%; /* altura menor */
+}
+      
+      
+  </style>
+</head>
+
+<body>
+
+ <!-- AppBar LIGHT -->
+<div class="appbar-light">
+  <div class="appbar-left">
+       <div class="appbar-title">
+      <span class="appbar-title-main">AFFriend</span>
+      <span class="appbar-title-sub">Tech&Edu</span>
+    </div>
+  </div>
+
+  <div class="appbar-right">
+    <button class="btn-appbar" onclick="newFile()" title="Novo"><i class="fas fa-file"></i></button>
+    <button class="btn-appbar" onclick="saveFile()" title="Guardar"><i class="fas fa-save"></i></button>
+    <button class="btn-appbar" onclick="runCode()" title="Executar"><i class="fas fa-play"></i></button>
+    <button class="btn-appbar" onclick="exportAsZip()" title="ZIP"><i class="fas fa-file-archive"></i></button>
+    <button class="btn-appbar" onclick="formatCode()" title="Formatar"><i class="fas fa-align-left"></i></button>
+    <button class="btn-appbar" onclick="toggleTheme()" title="Tema"><i class="fas fa-moon"></i></button>
+    <button class="btn-appbar" onclick="togglePreview()" title="Preview"><i class="fas fa-eye"></i></button>
+
+    <!-- Botões de modo -->
+    <button id="btnJS" class="btn-appbar" onclick="setMode('javascript')" title="Modo JS"><i class="fab fa-js"></i></button>
+    <button id="btnHTML" class="btn-appbar" onclick="setMode('htmlmixed')" title="Modo HTML"><i class="fab fa-html5"></i></button>
+    <div id="userAvatar" class="avatar"></div>
+  </div>
+</div>
+
+  <!-- Overlay -->
+  <div id="sidebarOverlay" class="sidebar-overlay hidden"></div>
+
+  <!-- Sidebar -->
+  <aside id="sidebarS3" class="sidebar-s3">
+    <div class="sidebar-s3-header">
+      <div>
+        <h1>AFFriend Code</h1>
+        <p>Ambiente de Programação</p>
+      </div>
+      <button id="closeSidebar" class="sidebar-s3-close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+   <nav class="sidebar-s3-nav">
+  <button onclick="goToPage('projects')"><i class="fas fa-folder-open"></i> Meus Projetos</button>
+  <button onclick="goToPage('cursos')"><i class="fas fa-book"></i> Cursos</button>
+  <button onclick="goToPage('produtos')"><i class="fas fa-box"></i> Produtos</button>
+  <button onclick="goToPage('marketplace')"><i class="fas fa-store"></i> Marketplace</button>
+  <button onclick="goToPage('feedback')"><i class="fas fa-comment-dots"></i> Feedback</button>
+  <button onclick="goToPage('configuracoes')"><i class="fas fa-cog"></i> Configurações</button>
+</nav>
+    <div class="sidebar-s3-footer">
+      <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+    </div>
+  </aside>
+
+  <!-- Botão mobile -->
+  <button id="sidebarToggle" class="sidebar-s3-toggle">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Editor -->
+  <div class="main-content">
+    <div class="editor-shell">
+      <div class="editor-header">
+        <div class="editor-header-left">
+          <span>Editor em tempo real</span>
+          <span class="editor-file-name">
+            <i class="fas fa-file-code" style="margin-right:4px;"></i>
+            <span id="fileNameLabel">Projeto atual</span>
+          </span>
+        </div>
+        <div class="editor-header-right">
+          <i class="fas fa-bolt text-primary"></i>
+          <span>Escreva, teste e visualize seu código em um só lugar</span>
+        </div>
+      </div>
+      <div class="editor-body">
+        <textarea id="codeEditor"></textarea>
+        <div class="preview-frame-wrapper">
+          <iframe id="previewFrame"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- Sidebar JS -->
+  <script>
+      
+      let editor = null;
+let currentUser = null;
+let currentFileName = null;
+let currentMode = "javascript";
+let isDarkTheme = false;
+let previewVisible = false;
+
+      
+      
+   // Detectar query string ?project=...
+       function verificarQueryProjeto() {
+       const params = new URLSearchParams(window.location.search);
+       const nome = params.get("project");
+       if (nome) carregarProjeto(nome);
+}
+      // Chamar após login e initCodeMirror
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+    currentUser = user;
+    updateAvatar();
+    initCodeMirror();
+    verificarQueryProjeto(); // <-- aqui
+    } else {
+        
+    window.location.href = "login.html";
+  }
+});
+      /*
+// Firebase Auth
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    currentUser = user;
+    updateAvatar();
+    initCodeMirror();
+  } else {
+    // Permite abrir mesmo sem login (para debug)
+    initCodeMirror();
+  }
+});
+      */
+
+function updateAvatar() {
+  const avatar = document.getElementById("userAvatar");
+  if (currentUser && currentUser.photoURL) {
+    avatar.style.backgroundImage = `url('${currentUser.photoURL}')`;
+    avatar.innerHTML = "";
+  } else if (currentUser) {
+    avatar.style.backgroundImage = "none";
+    avatar.textContent = (currentUser.email || "A").charAt(0).toUpperCase();
+  } else {
+    avatar.textContent = "?";
+  }
+}
+
+function initCodeMirror() {
+  if (editor) editor.toTextArea();
+  editor = CodeMirror.fromTextArea(document.getElementById("codeEditor"), {
+    mode: currentMode,
+    theme: isDarkTheme ? "monokai" : "default",
+    lineNumbers: true,
+    tabSize: 2,
+    indentUnit: 2,
+    matchBrackets: true,
+    autoCloseBrackets: true,
+    autoCloseTags: true
+  });
+
+  editor.setValue("// Bem-vindo ao AFFriend Code\nconsole.log('Olá, mundo!');");
+  editor.on("change", () => {
+    if (previewVisible) updatePreview();
+  });
+}
+
+function setMode(mode) {
+  currentMode = mode;
+  if (editor) editor.setOption("mode", mode);
+  document.getElementById("btnJS").classList.toggle("active", mode === "javascript");
+  document.getElementById("btnHTML").classList.toggle("active", mode === "htmlmixed");
+}
+
+function toggleTheme() {
+  isDarkTheme = !isDarkTheme;
+  if (editor) editor.setOption("theme", isDarkTheme ? "monokai" : "default");
+}
+
+function runCode() {
+  if (!editor) return;
+  const code = editor.getValue().trim();
+  const win = window.open("", "_blank");
+  win.document.write(code);
+  win.document.close();
+}
+//FUNÇÃO PARA SAVE/GUARDAR PROJECTO 
+function saveFile() {
+  if (!currentUser) return alert("Faça login primeiro.");
+  openModal("modalSaveProject");
+}
+
+function togglePriceField() {
+  const type = document.getElementById("projType").value;
+  document.getElementById("priceField").classList.toggle("hidden", type !== "paid");
+}
+
+async function confirmSaveProject() {
+  const title = document.getElementById("projTitle").value.trim();
+  const description = document.getElementById("projDesc").value.trim();
+  const type = document.getElementById("projType").value;
+  const price = type === "paid" ? Number(document.getElementById("projPrice").value) : 0;
+  const image = document.getElementById("projImage").value.trim();
+
+  if (!title) return alert("Título obrigatório.");
+
+  const data = {
+    code: editor.getValue(),
+    mode: currentMode,
+    title,
+    description,
+    type,
+    price,
+    image,
+    lastModified: Date.now()
+  };
+
+  try {
+    // Guardar no espaço do usuário
+    await firebase.database().ref(`users/${currentUser.uid}/projects/${title}`).set(data);
+
+    // Se for pago, também listar no Marketplace
+    if (type === "paid" && price > 0) {
+      const ref = firebase.database().ref("marketplace").push();
+      await ref.set({
+         id: ref.key,
+         title,
+         description,
+         category: "Projetos",
+         price,
+         emoji: "💡",
+         type: "project",
+         images: image ? [image] : [],
+         sellerId: currentUser.uid,   // <-- CORRETO
+         createdAt: Date.now()
+      });
+    }
+
+    currentFileName = title;
+    closeModal("modalSaveProject");
+    alert(`✅ Projeto "${title}" guardado como ${type === "free" ? "Grátis" : "Pago"}!`);
+  } catch (err) {
+    alert("Erro ao guardar: " + err.message);
+  }
+}
+    function openModal(id) {
+  document.getElementById(id).classList.remove("hidden");
+}
+function closeModal(id) {
+  document.getElementById(id).classList.add("hidden");
+} //FIM DA FUNÇÃO  OU CODIGO DE GUARDAR
+
+   //NOVO FICHEIRO OU PROJECTO   
+      function newFile() {
+  if (confirm("Criar novo arquivo?")) {
+    editor.setValue("");
+    currentFileName = null;
+  }
+}
+
+function formatCode() {
+  if (editor) editor.setValue(editor.getValue().trim());
+}
+
+async function exportAsZip() {
+  if (!editor) return;
+  const zip = new JSZip();
+  let fileName = currentFileName || "projeto";
+  zip.file(currentMode === "htmlmixed" ? "index.html" : "script.js", editor.getValue());
+  const content = await zip.generateAsync({ type: "blob" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(content);
+  a.download = fileName + ".zip";
+  a.click();
+}
+
+function togglePreview() {
+  previewVisible = !previewVisible;
+  const frame = document.getElementById("previewFrame");
+  frame.style.display = previewVisible ? "block" : "none";
+  if (previewVisible) updatePreview();
+}
+
+function updatePreview() {
+  if (currentMode !== "htmlmixed") return;
+  const iframe = document.getElementById("previewFrame");
+  const doc = iframe.contentDocument || iframe.contentWindow.document;
+  doc.open();
+  doc.write(editor.getValue());
+  doc.close();
+}
+
+      //Botoes do sidebar
+      function goToPage(page) {
+  const routes = {
+    projects: "user-projects.html",
+    feedback: "ver-feedback.html",
+    cursos: "cursos.html",
+    produtos: "produtos.html",
+    marketplace: "marketplace.html",
+    configuracoes: "configuracoes.html"
+  };
+  if (routes[page]) window.location.href = routes[page];
+}
+      
+    /* ============================
+   SIDEBAR S3 — CONTROLES
+============================ */
+
+const sidebar = document.getElementById("sidebarS3");
+const overlay = document.getElementById("sidebarOverlay");
+const toggleBtn = document.getElementById("sidebarToggle");
+const closeBtn = document.getElementById("closeSidebar");
+
+let startX = 0;
+let currentX = 0;
+let isDragging = false;
+const sidebarWidth = 260;
+
+/* ---------------------------
+   FUNÇÕES PRINCIPAIS
+---------------------------- */
+
+// Abrir sidebar
+function openSidebar() {
+  sidebar.style.transform = "translateX(0)";
+  overlay.classList.remove("hidden");
+  overlay.classList.add("sidebar-overlay-visible");
+}
+
+// Fechar sidebar
+function closeSidebarFunc() {
+  sidebar.style.transform = "translateX(-100%)";
+  overlay.classList.add("hidden");
+  overlay.classList.remove("sidebar-overlay-visible");
+}
+
+/* ---------------------------
+   BOTÕES
+---------------------------- */
+
+if (toggleBtn) toggleBtn.onclick = openSidebar;
+if (closeBtn) closeBtn.onclick = closeSidebarFunc;
+if (overlay) overlay.onclick = closeSidebarFunc;
+
+/* ---------------------------
+   SWIPE (TOUCH)
+---------------------------- */
+
+document.addEventListener("touchstart", (e) => {
+  startX = e.touches[0].clientX;
+  currentX = startX;
+
+  // Se sidebar está aberta → permitir arrastar para fechar
+  if (sidebar.style.transform === "translateX(0px)" ||
+      sidebar.style.transform === "translateX(0)") {
+    isDragging = true;
+  }
+
+  // Se toque começou na borda esquerda → permitir abrir
+  if (startX < 30) {
+    isDragging = true;
+  }
+});
+
+document.addEventListener("touchmove", (e) => {
+  if (!isDragging) return;
+
+  currentX = e.touches[0].clientX;
+  const deltaX = currentX - startX;
+
+  // Abrir arrastando da esquerda
+  if (startX < 30 && deltaX > 0) {
+    const move = Math.min(deltaX - sidebarWidth, 0);
+    sidebar.style.transform = `translateX(${move}px)`;
+    overlay.classList.remove("hidden");
+  }
+
+  // Fechar arrastando da direita
+  if ((sidebar.style.transform === "translateX(0px)" ||
+       sidebar.style.transform === "translateX(0)") && deltaX < 0) {
+    const move = Math.max(deltaX, -sidebarWidth);
+    sidebar.style.transform = `translateX(${move}px)`;
+  }
+});
+
+document.addEventListener("touchend", () => {
+  if (!isDragging) return;
+
+  const deltaX = currentX - startX;
+
+  // Abrir se arrastou mais de 60px
+  if (startX < 30 && deltaX > 60) {
+    openSidebar();
+  }
+  // Fechar se arrastou mais de 60px para a esquerda
+  else if (deltaX < -60) {
+    closeSidebarFunc();
+  }
+  // Caso contrário, volta ao estado anterior
+  else {
+    if (sidebar.style.transform.includes("-")) {
+      closeSidebarFunc();
+    } else {
+      openSidebar();
+    }
+  }
+
+  isDragging = false;
+});
+  </script>
+   <!--
+    ============================
+      MODAL DO SAVE AS
+      ========================== -->
+<!-- Modal Save Project -->
+<!-- Modal Save Project -->
+<div id="modalSaveProject" class="modal hidden">
+  <div class="modal-content">
+    <h2>Guardar Projeto</h2>
+
+    <label>Título</label>
+    <input id="projTitle" type="text" placeholder="Título do projeto">
+
+    <label>Descrição</label>
+    <textarea id="projDesc" placeholder="Descrição breve"></textarea>
+
+    <label>Tipo</label>
+    <select id="projType" onchange="togglePriceField()">
+      <option value="free">Grátis</option>
+      <option value="paid">Pago</option>
+    </select>
+
+    <div id="priceField" class="hidden">
+      <label>Preço (Kz)</label>
+      <input id="projPrice" type="number" min="1" placeholder="Ex: 5000">
+    </div>
+
+    <div id="imageField">
+      <label>Imagem (URL)</label>
+      <input id="projImage" type="text" placeholder="https://...">
+    </div>
+
+    <div class="modal-actions">
+      <button onclick="closeModal('modalSaveProject')">Cancelar</button>
+      <button onclick="confirmSaveProject()">Guardar</button>
+    </div>
+  </div>
+</div>
+      <!-- STILO DO MODAL -->
+      <style>
+      /* Container do modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.modal.hidden { display: none; }
+
+/* Caixa do modal */
+.modal-content {
+  background: #fff;
+  padding: 24px;
+  border-radius: 14px;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.25);
+  animation: fadeIn .3s ease;
+}
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #e60023;
+  margin-bottom: 16px;
+}
+
+/* Labels */
+.modal-content label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+/* Inputs e textarea */
+.modal-content input,
+.modal-content textarea,
+.modal-content select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 14px;
+  transition: border-color .25s, box-shadow .25s;
+}
+.modal-content input:focus,
+.modal-content textarea:focus,
+.modal-content select:focus {
+  border-color: #e60023;
+  box-shadow: 0 0 0 2px rgba(230,0,35,0.2);
+  outline: none;
+}
+
+/* Textarea */
+.modal-content textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* Botões */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+.modal-actions button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.modal-actions button:first-child {
+  background: #f5f5f5;
+  color: #333;
+}
+.modal-actions button:first-child:hover {
+  background: #e0e0e0;
+}
+.modal-actions button:last-child {
+  background: #e60023;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(230,0,35,0.4);
+}
+.modal-actions button:last-child:hover {
+  background: #cc001f;
+  transform: translateY(-2px);
+}
+
+/* Animação */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+      </style>
+</body>
+</html>

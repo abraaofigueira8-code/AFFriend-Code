@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Explorar - AFFriend Code</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+
+<body class="bg-gray-50">
+
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur border-b border-red-900/40">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg">
+          AF
+        </div>
+        <div class="leading-tight">
+          <div class="text-white font-semibold text-sm md:text-base">Professor Abraão Figueira</div>
+          <div class="text-xs text-gray-400">AFFriend Code Platform</div>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm text-gray-300">
+        <a href="produtos.html" class="hover:text-white">Produtos</a>
+        <a href="cursos.html" class="hover:text-white">Cursos</a>
+        <a href="explorar.html" class="hover:text-white">Marketplace</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="login.html" class="hidden md:inline-block text-sm text-gray-200 hover:text-white">Entrar</a>
+        <a href="login.html" class="bg-red-600 text-white px-4 md:px-6 py-2 rounded-full text-sm font-semibold hover:bg-red-500">
+          Criar Conta Grátis
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="bg-gradient-to-r from-red-700 to-red-900 text-white pt-24 pb-16">
+    <div class="max-w-6xl mx-auto px-6 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold">Marketplace</h1>
+      <p class="text-lg md:text-xl mt-4">Veja o que a comunidade AFFriend está criando.</p>
+    </div>
+  </section>
+
+  <!-- FILTROS -->
+  <section class="max-w-6xl mx-auto px-6 mt-10">
+    <div class="bg-white shadow rounded-3xl p-6 flex flex-col md:flex-row gap-6 items-center">
+
+      <input id="busca" type="text" placeholder="Pesquisar por nome..."
+        class="flex-1 p-3 border rounded-xl w-full"/>
+
+      <select id="filtroTipo" class="p-3 border rounded-xl">
+        <option value="todos">Todos</option>
+        <option value="projetos">Projetos</option>
+        <option value="produtos">Produtos</option>
+      </select>
+
+    </div>
+  </section>
+
+  <!-- LISTA -->
+  <section class="max-w-6xl mx-auto px-6 py-16">
+    <div id="lista" class="grid md:grid-cols-3 gap-8">
+      <!-- Cards via JS -->
+    </div>
+
+    <p id="vazio" class="text-center text-gray-500 mt-10 hidden">
+      Nada encontrado.
+    </p>
+  </section>
+
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    const db = firebase.database();
+
+    let projetos = [];
+    let produtos = [];
+
+    const lista = document.getElementById("lista");
+    const vazio = document.getElementById("vazio");
+    const busca = document.getElementById("busca");
+    const filtroTipo = document.getElementById("filtroTipo");
+
+    // Carregar projetos
+    db.ref("public_projects").on("value", snap => {
+      projetos = [];
+      snap.forEach(child => {
+        projetos.push({
+          id: child.key,
+          type: "projeto",
+          ...child.val()
+        });
+      });
+      render();
+    });
+
+    // Carregar produtos (opcional)
+    db.ref("marketplace").on("value", snap => {
+      produtos = [];
+      snap.forEach(child => {
+        produtos.push({
+          id: child.key,
+          type: "produto",
+          ...child.val()
+        });
+      });
+      render();
+    });
+
+    function render() {
+      lista.innerHTML = "";
+
+      let dados = [...projetos, ...produtos];
+
+      // Filtro tipo
+      if (filtroTipo.value === "projetos") {
+        dados = dados.filter(x => x.type === "projeto");
+      }
+      if (filtroTipo.value === "produtos") {
+        dados = dados.filter(x => x.type === "produto");
+      }
+
+      // Busca
+      const termo = busca.value.toLowerCase();
+      if (termo) {
+        dados = dados.filter(x =>
+          (x.title || "").toLowerCase().includes(termo)
+        );
+      }
+
+      if (dados.length === 0) {
+        vazio.classList.remove("hidden");
+        return;
+      }
+
+      vazio.classList.add("hidden");
+
+      dados.forEach(item => {
+        const emoji = item.emoji || "📦";
+        const title = item.title || "Sem título";
+        const desc = item.description || "Sem descrição.";
+
+        const link = item.type === "projeto"
+          ? `projeto.html?id=${item.id}`
+          : `explorar.html?id=${item.id}`;
+
+        const card = `
+          <div class="bg-white rounded-3xl p-8 shadow hover:shadow-xl transition flex flex-col">
+            <div class="text-6xl mb-6">${emoji}</div>
+            <h3 class="text-2xl font-semibold">${title}</h3>
+            <p class="text-gray-600 my-4 line-clamp-3">${desc}</p>
+
+            <button onclick="location.href='${link}'"
+              class="mt-auto w-full bg-red-600 text-white py-3 rounded-2xl font-medium hover:bg-red-500">
+              Ver Detalhes
+            </button>
+          </div>
+        `;
+
+        lista.insertAdjacentHTML("beforeend", card);
+      });
+    }
+
+    busca.oninput = render;
+    filtroTipo.onchange = render;
+  </script>
+
+  <!-- Botão Flutuante AFFriend IA -->
+<a href="affriendia.html" 
+   class="fixed bottom-6 right-6 bg-red-600 text-white rounded-full shadow-lg px-5 py-3 flex items-center gap-3 hover:bg-red-700 transition transform hover:scale-110 z-50"
+   title="Abrir AFFriend IA">
+  <i class="fas fa-robot text-2xl"></i>
+  <span class="font-semibold">Chat AFFriend IA</span>
+</a>
+</body>
+</html>

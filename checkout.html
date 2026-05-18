@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout - AFFriend Code</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+
+<body class="bg-gray-50">
+
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur border-b border-red-900/40">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg">
+          AF
+        </div>
+        <div class="leading-tight">
+          <div class="text-white font-semibold text-sm md:text-base">Professor Abraão Figueira</div>
+          <div class="text-xs text-gray-400">AFFriend Code Platform</div>
+        </div>
+      </div>
+      <div class="text-gray-300 text-sm hidden md:block">
+        <a href="index.html" class="hover:text-white">Voltar</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO -->
+  <main class="pt-28 pb-20 max-w-3xl mx-auto px-6">
+
+    <!-- LOADING -->
+    <div id="loading" class="text-center text-gray-600 text-lg">
+      Carregando informações da compra...
+    </div>
+
+    <!-- CHECKOUT -->
+    <div id="checkoutBox" class="hidden bg-white shadow-xl rounded-3xl p-8 md:p-10 space-y-8">
+
+      <!-- ITEM -->
+      <section>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Finalizar Compra</h1>
+        <p class="text-gray-600 mb-2"><span class="font-semibold">Item:</span> <span id="itemTitulo"></span></p>
+        <p class="text-gray-600 mb-2"><span class="font-semibold">Descrição:</span> <span id="itemDescricao"></span></p>
+        <p class="text-gray-800 text-xl font-bold mt-2">Total: <span id="itemPreco"></span> Kz</p>
+      </section>
+
+      <!-- MÉTODOS DE PAGAMENTO -->
+      <section>
+        <h2 class="text-lg font-semibold text-gray-900 mb-3">Escolha o método de pagamento</h2>
+        <div class="space-y-3">
+
+          <label class="flex items-center gap-3 p-3 border rounded-xl cursor-pointer hover:bg-gray-50">
+            <input type="radio" name="paymentMethod" value="multicaixa" class="w-4 h-4 text-red-600">
+            <div>
+              <div class="font-semibold text-gray-800">Multicaixa Express</div>
+              <div class="text-xs text-gray-500">Pagamento por referência / app Multicaixa Express.</div>
+            </div>
+          </label>
+
+          <label class="flex items-center gap-3 p-3 border rounded-xl cursor-pointer hover:bg-gray-50">
+            <input type="radio" name="paymentMethod" value="iban" class="w-4 h-4 text-red-600">
+            <div>
+              <div class="font-semibold text-gray-800">Transferência via IBAN</div>
+              <div class="text-xs text-gray-500">Transferência bancária nacional ou internacional.</div>
+            </div>
+          </label>
+
+          <label class="flex items-center gap-3 p-3 border rounded-xl cursor-pointer hover:bg-gray-50">
+            <input type="radio" name="paymentMethod" value="paypay" class="w-4 h-4 text-red-600">
+            <div>
+              <div class="font-semibold text-gray-800">PayPay África</div>
+              <div class="text-xs text-gray-500">Pagamento via carteira digital africana.</div>
+            </div>
+          </label>
+
+          <label class="flex items-center gap-3 p-3 border rounded-xl cursor-pointer hover:bg-gray-50">
+            <input type="radio" name="paymentMethod" value="paypal" class="w-4 h-4 text-red-600">
+            <div>
+              <div class="font-semibold text-gray-800">PayPal</div>
+              <div class="text-xs text-gray-500">Pagamento internacional com aprovação automática.</div>
+            </div>
+          </label>
+
+        </div>
+      </section>
+
+      <!-- INSTRUÇÕES DO MÉTODO -->
+      <section id="paymentInstructions" class="hidden border rounded-2xl p-4 bg-gray-50 text-sm text-gray-700 space-y-2">
+        <h3 class="font-semibold text-gray-900">Instruções de pagamento</h3>
+        <p id="instructionsText"></p>
+      </section>
+
+      <!-- COMPROVATIVO (IMAGEM OU PDF) -->
+      <section id="comprovativoBox" class="hidden">
+        <h3 class="text-sm font-semibold text-gray-900 mb-2">Envie o comprovativo do pagamento</h3>
+        <p class="text-xs text-gray-500 mb-2">Aceitamos imagem (JPG, PNG) ou PDF.</p>
+        <input id="comprovativoInput" type="file" accept="image/*,.pdf"
+               class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none">
+      </section>
+
+      <!-- BOTÃO -->
+      <section>
+        <button id="btnConfirmar"
+          class="w-full bg-red-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-red-500 transition">
+          Confirmar Pedido
+        </button>
+      </section>
+
+    </div>
+
+    <!-- ERRO -->
+    <div id="erro" class="hidden text-center text-red-600 text-lg font-semibold mt-10">
+      Item não encontrado.
+    </div>
+
+  </main>
+
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    const db = firebase.database();
+    const auth = firebase.auth();
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    const type = params.get("type"); // curso ou produto
+
+    let item = null;
+    let userId = null;
+
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        alert("Faça login para continuar.");
+        location.href = "login.html";
+        return;
+      }
+
+      userId = user.uid;
+      carregarItem();
+    });
+
+    function carregarItem() {
+      if (!id || !type) {
+        mostrarErro();
+        return;
+      }
+
+      const path = type === "curso" ? "courses/" : "marketplace/";
+
+      db.ref(path + id).once("value").then(snap => {
+        document.getElementById("loading").classList.add("hidden");
+
+        if (!snap.exists()) {
+          mostrarErro();
+          return;
+        }
+
+        item = snap.val();
+
+        document.getElementById("checkoutBox").classList.remove("hidden");
+        document.getElementById("itemTitulo").textContent = item.title || "Item sem título";
+        document.getElementById("itemDescricao").textContent = item.description || "Sem descrição.";
+        document.getElementById("itemPreco").textContent = item.price || "0";
+
+        configurarMetodosPagamento();
+      });
+    }
+
+    function configurarMetodosPagamento() {
+      const radios = document.querySelectorAll('input[name="paymentMethod"]');
+      const instructionsBox = document.getElementById("paymentInstructions");
+      const instructionsText = document.getElementById("instructionsText");
+      const comprovativoBox = document.getElementById("comprovativoBox");
+
+      radios.forEach(radio => {
+        radio.addEventListener("change", () => {
+          const method = radio.value;
+          instructionsBox.classList.remove("hidden");
+
+          if (method === "multicaixa") {
+            instructionsText.textContent =
+              "Pague via Multicaixa Express usando a referência enviada pelo vendedor. Após o pagamento, envie o comprovativo.";
+            comprovativoBox.classList.remove("hidden");
+          } else if (method === "iban") {
+            instructionsText.textContent =
+              "Faça uma transferência bancária para o IBAN indicado pelo vendedor. Envie o comprovativo após o pagamento.";
+            comprovativoBox.classList.remove("hidden");
+          } else if (method === "paypay") {
+            instructionsText.textContent =
+              "Pague via PayPay África para a conta indicada pelo vendedor e envie o comprovativo.";
+            comprovativoBox.classList.remove("hidden");
+          } else if (method === "paypal") {
+            instructionsText.textContent =
+              "Você será processado via PayPal. Este método não exige envio de comprovativo aqui. A liberação é automática.";
+            comprovativoBox.classList.add("hidden");
+          }
+        });
+      });
+
+      document.getElementById("btnConfirmar").onclick = finalizarPedido;
+    }
+
+    function finalizarPedido() {
+      if (!item || !userId) return;
+
+      const method = document.querySelector('input[name="paymentMethod"]:checked');
+      if (!method) {
+        alert("Selecione um método de pagamento.");
+        return;
+      }
+
+      const methodValue = method.value;
+      const fileInput = document.getElementById("comprovativoInput");
+      const precisaComprovativo = methodValue !== "paypal";
+
+      if (precisaComprovativo && (!fileInput.files || fileInput.files.length === 0)) {
+        alert("Envie o comprovativo do pagamento (imagem ou PDF).");
+        return;
+      }
+
+      if (precisaComprovativo) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const base64 = e.target.result;
+          salvarCompra(methodValue, base64, "pending");
+        };
+        reader.readAsDataURL(file);
+      } else {
+        // PayPal: sem comprovativo, podemos marcar como aprovado direto (protótipo)
+        salvarCompra(methodValue, null, "approved", true);
+      }
+    }
+
+    function salvarCompra(method, comprovativoBase64, status, liberarDireto = false) {
+      const purchaseRef = db.ref("purchases").push();
+
+      const purchaseData = {
+        id,
+        type,
+        buyerId: userId,
+        sellerId: item.sellerId || "admin",
+        price: item.price || 0,
+        title: item.title || "",
+        description: item.description || "",
+        method,
+        comprovativoBase64: comprovativoBase64 || null,
+        status, // "pending" ou "approved"
+        createdAt: Date.now()
+      };
+
+      purchaseRef.set(purchaseData).then(() => {
+        // Se for PayPal e decidirmos liberar direto:
+        if (liberarDireto) {
+          if (type === "curso") {
+            db.ref("userCourses/" + userId + "/" + id).set(true);
+          } else if (type === "produto") {
+            db.ref("userPurchases/" + userId + "/" + id).set(true);
+          }
+        }
+
+        alert("Pedido registrado com sucesso!");
+        location.href = "recibo.html?id=" + purchaseRef.key;
+      }).catch(err => {
+        console.error(err);
+        alert("Erro ao registrar pedido: " + err.message);
+      });
+    }
+
+    function mostrarErro() {
+      document.getElementById("loading").classList.add("hidden");
+      document.getElementById("erro").classList.remove("hidden");
+    }
+  </script>
+
+  <!-- Botão Flutuante AFFriend IA -->
+<a href="affriendia.html" 
+   class="fixed bottom-6 right-6 bg-red-600 text-white rounded-full shadow-lg px-5 py-3 flex items-center gap-3 hover:bg-red-700 transition transform hover:scale-110 z-50"
+   title="Abrir AFFriend IA">
+  <i class="fas fa-robot text-2xl"></i>
+  <span class="font-semibold">Chat AFFriend IA</span>
+</a>
+</body>
+</html>

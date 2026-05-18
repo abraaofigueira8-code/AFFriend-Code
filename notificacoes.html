@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notificações - AFFriend Code</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+
+<body class="bg-gray-50">
+
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur border-b border-red-900/40">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg">AF</div>
+        
+        <div class="text-gray-300 text-sm hidden md:block">
+        <a href="dashboard.html" class="hover:text-white">Editor</a>
+      </div>
+      <div class="text-gray-300 text-sm hidden md:block">
+        <a href="mensagens.html" class="hover:text-white">Mensagens</a>
+      </div>
+      <div class="text-gray-300 text-sm hidden md:block">
+        <a href="notificacoes.html" class="hover:text-white">Notificações</a>
+      </div>
+      <div class="text-gray-300 text-sm hidden md:block">
+        <a href="my-activity.html" class="hover:text-white">Actividades</a>
+      </div>
+      <div class="text-gray-300 text-sm hidden md:block">
+        <a href="produtos.html" class="hover:text-white">Produtos</a>
+      </div>
+    </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm text-gray-300">
+        <a href="index.html" class="hover:text-white">Início</a>
+        <a href="cursos.html" class="hover:text-white">Cursos</a>
+        <a href="explorar.html" class="hover:text-white">Marketplace</a>
+        <a href="materiais.html" class="hover:text-white">Materiais</a>
+      </nav>
+      <a href="login.html" class="bg-red-600 text-white px-4 md:px-6 py-2 rounded-full text-sm font-semibold hover:bg-red-500">
+        Criar Conta Grátis
+      </a>
+    </div>
+        
+        <div class="leading-tight">
+          <div class="text-white font-semibold text-sm md:text-base">AFFriend Code</div>
+          <div class="text-xs text-gray-400">Notificações</div>
+        </div>
+      </div>
+      <a href="perfil.html" class="text-gray-300 hover:text-white text-sm">Voltar</a>
+    </div>
+  </header>
+
+  <!-- LISTA -->
+  <main class="pt-28 pb-20 max-w-4xl mx-auto px-6">
+
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Notificações</h1>
+
+    <div id="lista" class="space-y-4"></div>
+
+    <p id="vazio" class="text-gray-500 mt-10 hidden">Nenhuma notificação.</p>
+
+  </main>
+
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    let userId = null;
+
+    auth.onAuthStateChanged(user => {
+      if (!user) return location.href = "login.html";
+      userId = user.uid;
+      carregarNotificacoes();
+    });
+
+    function carregarNotificacoes() {
+      db.ref("notifications/" + userId).on("value", snap => {
+        const lista = document.getElementById("lista");
+        const vazio = document.getElementById("vazio");
+
+        lista.innerHTML = "";
+
+        if (!snap.exists()) {
+          vazio.classList.remove("hidden");
+          return;
+        }
+
+        vazio.classList.add("hidden");
+
+        snap.forEach(child => {
+          const n = child.val();
+
+          const card = `
+            <div class="p-5 bg-white rounded-2xl shadow flex items-start gap-4 border-l-4 ${n.read ? 'border-gray-300' : 'border-red-600'}">
+              <div class="text-2xl">${n.icon || "🔔"}</div>
+              <div class="flex-1">
+                <h3 class="font-semibold text-gray-900">${n.title}</h3>
+                <p class="text-gray-600 text-sm mt-1">${n.message}</p>
+                <p class="text-gray-400 text-xs mt-2">${new Date(n.time).toLocaleString()}</p>
+              </div>
+            </div>
+          `;
+
+          lista.insertAdjacentHTML("beforeend", card);
+
+          if (!n.read) {
+            db.ref("notifications/" + userId + "/" + child.key + "/read").set(true);
+          }
+        });
+      });
+    }
+  </script>
+
+</body>
+</html>

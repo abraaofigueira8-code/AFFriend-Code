@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Produto — AFFriend Code</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+
+<body class="bg-gray-50">
+
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur border-b border-red-900/40">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg">
+          AF
+        </div>
+        <div class="leading-tight">
+          <div class="text-white font-semibold text-sm md:text-base">Professor Abraão Figueira</div>
+          <div class="text-xs text-gray-400">AFFriend Code Platform</div>
+        </div>
+      </div>
+      <a href="explorar.html" class="text-gray-300 hover:text-white text-sm">Voltar</a>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO -->
+  <main class="pt-28 pb-20 max-w-4xl mx-auto px-6">
+
+    <!-- LOADING -->
+    <div id="loading" class="text-center text-gray-600 text-lg">
+      Carregando produto...
+    </div>
+
+    <!-- PRODUTO -->
+    <div id="produtoBox" class="hidden bg-white shadow-xl rounded-3xl p-10">
+
+      <div class="flex flex-col md:flex-row gap-10">
+
+        <!-- EMOJI / IMAGEM -->
+        <div class="text-8xl md:text-9xl" id="prodEmoji">🛒</div>
+
+        <!-- INFO -->
+        <div class="flex-1">
+          <h1 id="prodTitulo" class="text-3xl font-bold text-gray-900"></h1>
+
+          <p id="prodDescricao" class="text-gray-700 mt-4 leading-relaxed"></p>
+
+          <div class="mt-6 text-3xl font-bold text-red-600">
+            <span id="prodPreco"></span> Kz
+          </div>
+
+          <p class="mt-4 text-gray-500 text-sm">
+            Vendido por: <span id="prodVendedor" class="font-semibold text-gray-700"></span>
+          </p>
+
+          <div class="mt-8 flex flex-col gap-3">
+
+            <button id="btnComprar"
+              class="bg-red-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-red-500 transition">
+              Comprar Agora
+            </button>
+
+            <button id="btnAbrir" class="hidden bg-gray-900 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-black transition">
+              Abrir Produto
+            </button>
+
+            <button id="btnMensagem"
+              class="bg-gray-200 text-gray-800 px-8 py-3 rounded-xl text-sm hover:bg-gray-300 transition">
+              Contactar Vendedor
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- PREVIEW -->
+      <div class="mt-10">
+        <h2 class="text-xl font-semibold mb-3">Resumo</h2>
+        <pre id="prodPreview" class="bg-gray-900 text-green-300 text-sm p-4 rounded-2xl overflow-auto max-h-72"></pre>
+      </div>
+
+    </div>
+
+    <!-- ERRO -->
+    <div id="erro" class="hidden text-center text-red-600 text-lg font-semibold mt-10">
+      Produto não encontrado.
+    </div>
+
+  </main>
+
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    const db = firebase.database();
+    const auth = firebase.auth();
+
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get("id");
+
+    let produto = null;
+    let userId = null;
+
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        alert("Faça login para continuar.");
+        location.href = "login.html";
+        return;
+      }
+
+      userId = user.uid;
+      carregarProduto();
+    });
+
+    function carregarProduto() {
+      if (!productId) {
+        mostrarErro();
+        return;
+      }
+
+      db.ref("marketplace/" + productId).once("value").then(snap => {
+        document.getElementById("loading").classList.add("hidden");
+
+        if (!snap.exists()) {
+          mostrarErro();
+          return;
+        }
+
+        produto = snap.val();
+
+        document.getElementById("produtoBox").classList.remove("hidden");
+
+        document.getElementById("prodEmoji").textContent = produto.emoji || "🛒";
+        document.getElementById("prodTitulo").textContent = produto.title;
+        document.getElementById("prodDescricao").textContent = produto.description;
+        document.getElementById("prodPreco").textContent = produto.price;
+        document.getElementById("prodVendedor").textContent = produto.sellerName || "Vendedor";
+
+        const preview = produto.preview || produto.code || produto.html || "Sem preview disponível.";
+        document.getElementById("prodPreview").textContent = preview.slice(0, 1500);
+
+        verificarCompra();
+      });
+    }
+
+    function verificarCompra() {
+      db.ref("userPurchases/" + userId + "/" + productId).once("value").then(snap => {
+        if (snap.exists()) {
+          document.getElementById("btnComprar").classList.add("hidden");
+          document.getElementById("btnAbrir").classList.remove("hidden");
+
+          document.getElementById("btnAbrir").onclick = () => {
+            location.href = "projeto.html?id=" + productId;
+          };
+        } else {
+          document.getElementById("btnComprar").onclick = () => {
+            location.href = "checkout.html?id=" + productId + "&type=produto";
+          };
+        }
+      });
+    }
+
+    function mostrarErro() {
+      document.getElementById("loading").classList.add("hidden");
+      document.getElementById("erro").classList.remove("hidden");
+    }
+  </script>
+
+</body>
+</html>

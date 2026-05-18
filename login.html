@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Entrar - Professor Abraão Figueira</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  
+  
+  <style>
+    /* ============================
+       ANIMAÇÕES PREMIUM
+    ============================ */
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(25px) scale(.97); filter: blur(6px); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
+    @keyframes floatLight {
+      0% { transform: translateY(0) translateX(0); opacity: .25; }
+      50% { transform: translateY(-20px) translateX(15px); opacity: .45; }
+      100% { transform: translateY(0) translateX(0); opacity: .25; }
+    }
+
+    @keyframes buttonPress {
+      0% { transform: scale(1); }
+      50% { transform: scale(.95); }
+      100% { transform: scale(1); }
+    }
+
+    .animate-fadeUp { animation: fadeUp .9s ease-out forwards; }
+    .animate-delay-1 { animation-delay: .15s; }
+    .animate-delay-2 { animation-delay: .3s; }
+    .animate-delay-3 { animation-delay: .45s; }
+
+    /* Luzes suaves */
+    .light {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, #ff3333, transparent 10%);
+      border-radius: 50%;
+      animation: floatLight 20s ease-in-out infinite;
+      filter: blur(80px);
+    }
+  </style>
+</head>
+
+<body class="bg-white min-h-screen flex items-center justify-center overflow-hidden relative">
+
+  <!-- Partículas -->
+  <canvas id="particles" class="absolute inset-0"></canvas>
+
+  <!-- Luzes suaves -->
+  <div class="light top-10 left-10"></div>
+  <div class="light bottom-10 right-10 animation-delay-2"></div>
+
+  <!-- CONTAINER -->
+  <div class="relative z-10 w-full max-w-md px-6">
+
+    <!-- TÍTULO -->
+    <div class="text-center mb-10 animate-fadeUp">
+      <h1 class="text-4xl font-bold text-gray-900 mb-2">Bem-vindo de volta</h1>
+      <p class="text-gray-600 text-lg">Professor Abraão Figueira</p>
+    </div>
+
+    <!-- CARD 3D -->
+    <div id="card3d"
+      class="bg-white/70 backdrop-blur-xl border border-gray-200 rounded-3xl p-8 shadow-xl animate-fadeUp animate-delay-1 transition-transform duration-300 will-change-transform">
+
+      <h2 class="text-2xl font-semibold text-gray-900 text-center mb-8">Entrar na Plataforma</h2>
+
+      <div class="space-y-6">
+        <!-- Inputs de entrada -->
+       <div class="relative">
+      <i class="fa-solid fa-envelope text-gray-500 absolute right-4 top-1/2 -translate-y-1/2"></i>
+     <input type="email" id="email"
+    class="w-full bg-gray-100 border border-gray-300 rounded-2xl pl-12 pr-4 py-4 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-red-500 transition-all duration-300">
+</div>
+
+        <div class="relative">
+  <i class="fa-solid fa-lock text-gray-500 absolute left-4 top-1/2 -translate-y-1/2"></i>
+  <input type="password" id="password"
+    class="w-full bg-gray-100 border border-gray-300 rounded-2xl pl-12 pr-12 py-4 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-red-500 transition-all duration-300">
+  <i class="fa-solid fa-eye-slash text-gray-500 absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
+     onclick="togglePassword('password', this)"></i>
+</div>
+        <!-- BOTÃO LOGIN -->
+        <button onclick="login()"
+          class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-4 rounded-2xl text-lg transition-all duration-300 active:animate-[buttonPress_.2s] shadow-[0_0_20px_#ff333320] hover:shadow-[0_0_30px_#ff333340]">
+          Entrar
+        </button>
+        <!-- Esqueceu a senha -->
+        <div class="text-center">
+          <a href="#" onclick="forgotPassword()" class="text-gray-600 hover:text-gray-900 text-sm transition">
+            Esqueceu a palavra-passe?
+          </a>
+        </div>
+      </div>
+      <h3 style="font-size:18px; ">Continue com</h3>
+      <div class="my-8 border-t border-gray-300"></div>
+      <button onclick="loginWithGoogle()"
+        class="w-full bg-white text-red font-medium py-4 rounded-2xl flex items-center justify-center gap-3 hover:bg-gray-100 transition-all duration-300 shadow-md border border-gray-300">
+        <i class="fab fa-google"></i>      
+      </button>
+      <!-- Github login -->
+      <button onclick="loginWithGithub()"
+        class="w-full bg-white text-black font-medium py-4 rounded-2xl flex items-center justify-center gap-3 hover:bg-gray-100 transition-all duration-300 shadow-md border border-gray-300">
+        <i class="fab fa-github"></i>    
+      </button>
+    </div>
+
+    <div class="text-center mt-8 text-gray-600 animate-fadeUp animate-delay-3">
+      Não tem conta?
+      <a href="#" onclick="showRegister()" class="text-red-600 hover:underline font-medium">Criar conta grátis</a>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    /* ============================
+       LOGIN
+    ============================ */
+  // LOGIN EMAIL/SENHA
+async function login() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!email || !password) {
+    showAlert("Preencha todos os campos", "warning");
+    return;
+  }
+
+  try {
+    await firebase.auth().signInWithEmailAndPassword(email, password);
+    showAlert("Login realizado com sucesso!", "success");
+    setTimeout(() => window.location.href = "dashboard.html", 1200);
+  } catch (error) {
+    showAlert(error.message, "error");
+  }
+}
+
+// LOGIN GOOGLE
+async function loginWithGoogle() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+
+  try {
+    await firebase.auth().signInWithPopup(provider);
+    showAlert("Login com Google realizado!", "success");
+    setTimeout(() => window.location.href = "dashboard.html", 1200);
+  } catch (error) {
+    showAlert("Erro ao entrar com Google: " + error.message, "error");
+  }
+}
+
+// LOGIN GITHUB
+async function loginWithGithub() {
+  const provider = new firebase.auth.GithubAuthProvider();
+
+  try {
+    await firebase.auth().signInWithPopup(provider);
+    showAlert("Login com GitHub realizado!", "success");
+    setTimeout(() => window.location.href = "dashboard.html", 1200);
+  } catch (error) {
+    showAlert("Erro ao entrar com GitHub: " + error.message, "error");
+  }
+}
+  //login do Discord
+  async function loginWithDiscord() {
+      const provider = new firebase.auth.DiscordAuthProvider();
+      try {
+        await firebase.auth().signInWithPopup(provider);
+        window.location.href = "dashboard.html";
+      } catch (error) {
+        alert("Erro no Discord: " + error.message);
+      }
+    }
+  
+  
+  //Redefinição da senha
+    function forgotPassword() {
+      const email = document.getElementById("email").value;
+      if (!email) return alert("Digite seu email");
+
+      firebase.auth().sendPasswordResetEmail(email)
+        .then(() => alert("Email de recuperação enviado!"))
+        .catch(err => alert("Erro: " + err.message));
+    }
+
+  //Crie ima conta
+    function showRegister() {
+      window.location.href = "criarconta.html";
+    }
+
+    /* ============================
+       CARD 3D TILT
+    ============================ */
+    const card = document.getElementById("card3d");
+
+    card.addEventListener("mousemove", (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+
+      const rotateX = (y / 20) * -1;
+      const rotateY = x / 20;
+
+      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+    });
+
+    card.addEventListener("mouseleave", () => {
+      card.style.transform = "rotateX(0) rotateY(0) scale(1)";
+    });
+
+    /* ============================
+       PARTÍCULAS INTERATIVAS
+    ============================ */
+    const canvas = document.getElementById("particles");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+
+    for (let i = 0; i < 50; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 2 + 1,
+        speedX: Math.random() * 0.4 - 0.2,
+        speedY: Math.random() * 0.4 - 0.2
+      });
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+
+        if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+
+        ctx.fillStyle = "rgba(0,0,0,0.15)";
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    /* ============================
+       MOUSE ATRAI PARTÍCULAS
+    ============================ */
+    window.addEventListener("mousemove", (e) => {
+      particles.forEach(p => {
+        const dx = e.clientX - p.x;
+        const dy = e.clientY - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 120) {
+          p.x -= dx * 0.015;
+          p.y -= dy * 0.015;
+        }
+      });
+    });
+ 
+      //SCRIPT PARA INPUTS -->
+function togglePassword(id, icon) {
+  const input = document.getElementById(id);
+  if (input.type === "password") {
+    input.type = "text";
+    icon.classList.remove("fa-eye-slash");
+    icon.classList.add("fa-eye");
+  } else {
+    input.type = "password";
+    icon.classList.remove("fa-eye");
+    icon.classList.add("fa-eye-slash");
+  }
+}
+</script>
+      
+<!-- ALERTA PROFISSIONAL -->
+<div id="alertBox"
+     class="hidden fixed top-5 right-5 z-50 px-5 py-4 rounded-xl shadow-lg text-white text-sm font-medium flex items-center gap-3 transition-all duration-300 opacity-0 translate-y-[-10px]">
+  <span id="alertIcon">⚠️</span>
+  <span id="alertMessage">Mensagem</span>
+</div>
+
+<script>
+function showAlert(message, type = "success") {
+  const box = document.getElementById("alertBox");
+  const msg = document.getElementById("alertMessage");
+  const icon = document.getElementById("alertIcon");
+
+  msg.textContent = message;
+
+  // Estilos
+  if (type === "success") {
+    box.style.background = "#16a34a"; // verde
+    icon.textContent = "✔️";
+  } else if (type === "error") {
+    box.style.background = "#dc2626"; // vermelho
+    icon.textContent = "❌";
+  } else if (type === "warning") {
+    box.style.background = "#d97706"; // laranja
+    icon.textContent = "⚠️";
+  }
+
+  // Mostrar
+  box.classList.remove("hidden");
+  setTimeout(() => {
+    box.style.opacity = "1";
+    box.style.transform = "translateY(0)";
+  }, 10);
+
+  // Fechar automático
+  setTimeout(() => {
+    box.style.opacity = "0";
+    box.style.transform = "translateY(-10px)";
+    setTimeout(() => box.classList.add("hidden"), 300);
+  }, 3000);
+}
+</script>
+</body>
+</html>

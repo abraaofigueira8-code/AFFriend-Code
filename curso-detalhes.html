@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Curso - AFFriend Code</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+
+<body class="bg-gray-50">
+
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur border-b border-red-900/40">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg">
+          AF
+        </div>
+        <div class="leading-tight">
+          <div class="text-white font-semibold text-sm md:text-base">Professor Abraão Figueira</div>
+          <div class="text-xs text-gray-400">AFFriend Code Platform</div>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm text-gray-300">
+        <a href="produtos.html" class="hover:text-white">Produtos</a>
+        <a href="cursos.html" class="hover:text-white">Cursos</a>
+        <a href="explorar.html" class="hover:text-white">Marketplace</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="login.html" class="hidden md:inline-block text-sm text-gray-200 hover:text-white">Entrar</a>
+        <a href="login.html" class="bg-red-600 text-white px-4 md:px-6 py-2 rounded-full text-sm font-semibold hover:bg-red-500">
+          Criar Conta Grátis
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO -->
+  <main class="pt-28 pb-20 max-w-5xl mx-auto px-6">
+
+    <!-- LOADING -->
+    <div id="loading" class="text-center text-gray-600 text-lg">
+      Carregando curso...
+    </div>
+
+    <!-- CURSO -->
+    <div id="cursoBox" class="hidden bg-white shadow-xl rounded-3xl p-10">
+
+      <div class="flex flex-col md:flex-row gap-10">
+
+        <!-- EMOJI / THUMB -->
+        <div class="text-8xl md:text-9xl" id="cursoEmoji">📘</div>
+
+        <!-- INFO -->
+        <div class="flex-1">
+          <h1 id="cursoTitulo" class="text-4xl font-bold text-gray-900"></h1>
+
+          <p id="cursoDescricao" class="text-gray-700 mt-4 leading-relaxed"></p>
+
+          <div class="mt-6">
+            <span class="text-3xl font-bold text-red-600" id="cursoPreco"></span>
+          </div>
+
+          <button id="btnComprar"
+            class="mt-8 w-full md:w-auto bg-red-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-red-500 transition">
+            Comprar Curso
+          </button>
+
+          <button id="btnContinuar"
+            class="hidden mt-4 w-full md:w-auto bg-green-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-green-500 transition">
+            Continuar Curso
+          </button>
+        </div>
+      </div>
+
+      <!-- AULAS -->
+      <div class="mt-10">
+        <h2 class="text-2xl font-semibold mb-4">Aulas do Curso</h2>
+
+        <div id="listaAulas" class="space-y-4">
+          <!-- Aulas via JS -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ERRO -->
+    <div id="erro" class="hidden text-center text-red-600 text-lg font-semibold mt-10">
+      Curso não encontrado.
+    </div>
+
+  </main>
+
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    const db = firebase.database();
+    const auth = firebase.auth();
+
+    // Obter ID da URL
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    if (!id) {
+      document.getElementById("loading").classList.add("hidden");
+      document.getElementById("erro").classList.remove("hidden");
+    } else {
+      db.ref("courses/" + id).once("value").then(snap => {
+        document.getElementById("loading").classList.add("hidden");
+
+        if (!snap.exists()) {
+          document.getElementById("erro").classList.remove("hidden");
+          return;
+        }
+
+        const c = snap.val();
+
+        document.getElementById("cursoBox").classList.remove("hidden");
+
+        document.getElementById("cursoEmoji").textContent = c.emoji || "📘";
+        document.getElementById("cursoTitulo").textContent = c.title || "Curso sem título";
+        document.getElementById("cursoDescricao").textContent = c.description || "Sem descrição.";
+        document.getElementById("cursoPreco").textContent = "Kz$ " + (c.price || 0);
+
+        // Botão comprar
+        document.getElementById("btnComprar").onclick = () => {
+          location.href = "checkout.html?id=" + id + "&type=curso";
+        };
+
+        // Carregar aulas
+        db.ref("courseLessons/" + id).once("value").then(lessonsSnap => {
+          const lista = document.getElementById("listaAulas");
+
+          if (!lessonsSnap.exists()) {
+            lista.innerHTML = "<p class='text-gray-500'>Nenhuma aula cadastrada.</p>";
+            return;
+          }
+
+          lessonsSnap.forEach(child => {
+            const a = child.val();
+
+            lista.innerHTML += `
+              <div class="p-4 bg-gray-100 rounded-xl flex justify-between items-center">
+                <span class="font-medium">${a.title}</span>
+                <span class="text-gray-600 text-sm">${a.duration || ""}</span>
+              </div>
+            `;
+          });
+        });
+
+        // Verificar se o usuário já comprou
+        auth.onAuthStateChanged(user => {
+          if (!user) return;
+
+          db.ref("userCourses/" + user.uid + "/" + id).once("value").then(snap => {
+            if (snap.exists()) {
+              document.getElementById("btnComprar").classList.add("hidden");
+              document.getElementById("btnContinuar").classList.remove("hidden");
+
+              document.getElementById("btnContinuar").onclick = () => {
+                location.href = "aulas.html?id=" + id;
+              };
+            }
+          });
+        });
+
+      });
+    }
+  </script>
+
+  
+  <!-- Botão Flutuante AFFriend IA -->
+<a href="affriendia.html" 
+   class="fixed bottom-6 right-6 bg-red-600 text-white rounded-full shadow-lg px-5 py-3 flex items-center gap-3 hover:bg-red-700 transition transform hover:scale-110 z-50"
+   title="Abrir AFFriend IA">
+  <i class="fas fa-robot text-2xl"></i>
+  <span class="font-semibold">Chat AFFriend IA</span>
+</a>
+</body>
+</html>

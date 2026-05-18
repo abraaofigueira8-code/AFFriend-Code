@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Termos e Condições de Uso - AFFriend Code</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f8f9fa;
+      color: #333;
+      line-height: 1.7;
+      margin: 0;
+      padding: 0;
+    }
+    .appbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      background: white;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 1000;
+    }
+    .container {
+      max-width: 900px;
+      margin: 90px auto 60px;
+      padding: 40px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+    }
+    h1, h2 {
+      color: #ff3333;
+    }
+    h2 {
+      margin-top: 35px;
+      border-bottom: 2px solid #ff3333;
+      padding-bottom: 8px;
+    }
+    ul {
+      margin: 15px 0;
+      padding-left: 25px;
+    }
+    .last-update {
+      color: #666;
+      font-style: italic;
+      margin-bottom: 30px;
+    }
+    .footer-text {
+      text-align: center;
+      margin-top: 50px;
+      color: #777;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- AppBar -->
+  <div class="appbar">
+    <button onclick="goBack()" style="background:none; border:none; font-size:24px; cursor:pointer; color:#ff3333;">
+      ← Voltar
+    </button>
+    <h2 style="margin:0 auto; color:#ff3333;">Termos e Condições de Uso</h2>
+  </div>
+
+  <div class="container">
+    <h1>Termos e Condições de Uso</h1>
+    <p class="last-update"><strong>Última atualização:</strong> 07 de Maio de 2026</p>
+
+    <p>Estes Termos e Condições regulam o acesso e utilização da plataforma <strong>AFFriend Code</strong>, doravante designada como “Plataforma” ou “Serviço”.</p>
+
+    <h2>1. Aceitação dos Termos</h2>
+    <p>Ao aceder ou utilizar o AFFriend Code, o utilizador declara ter lido, compreendido e aceitado integralmente os presentes Termos e Condições de Uso, bem como a <a href="politicas.html">Política de Privacidade</a>. Caso não concorde com qualquer disposição, deve abster-se de utilizar o Serviço.</p>
+
+    <h2>2. Descrição do Serviço</h2>
+    <p>O AFFriend Code é uma plataforma online que permite aos utilizadores criar, editar, testar, guardar e partilhar projetos de programação nas linguagens JavaScript, HTML/CSS e Python. Inclui editor avançado, preview em tempo real, salvamento automático, Marketplace P2P e funcionalidades de colaboração.</p>
+
+    <h2>3. Elegibilidade e Conta de Utilizador</h2>
+    <p>O Serviço destina-se a pessoas com capacidade jurídica plena. A criação de conta é opcional, mas necessária para aceder a funcionalidades de armazenamento na nuvem, Marketplace e sincronização entre dispositivos. O utilizador é responsável pela veracidade dos dados fornecidos e pela confidencialidade da sua conta.</p>
+
+    <h2>4. Obrigações do Utilizador</h2>
+    <p>O utilizador compromete-se a:</p>
+    <ul>
+      <li>Utilizar o Serviço apenas para fins lícitos;</li>
+      <li>Não publicar, transmitir ou armazenar código malicioso, vírus ou conteúdo prejudicial;</li>
+      <li>Respeitar os direitos de propriedade intelectual de terceiros;</li>
+      <li>Não realizar engenharia reversa, descompilação ou tentativas de acesso não autorizado;</li>
+      <li>Não utilizar o Serviço para spam, phishing, discriminação ou atividades ilegais.</li>
+    </ul>
+
+    <h2>5. Propriedade Intelectual</h2>
+    <p>Todos os direitos relativos à Plataforma (design, código, logótipo, interfaces) pertencem ao AFFriend Code. O utilizador mantém a propriedade dos projetos que cria, concedendo ao serviço uma licença não exclusiva para hospedar e exibir o conteúdo.</p>
+
+    <h2>6. Marketplace P2P</h2>
+    <p>O AFFriend Code atua apenas como intermediário no Marketplace. As transações são realizadas diretamente entre comprador e vendedor. O AFFriend Code não é responsável pela qualidade, legalidade ou entrega dos projetos vendidos.</p>
+
+    <h2>7. Limitação de Responsabilidade</h2>
+    <p>O Serviço é fornecido “no estado em que se encontra”. Não garantimos disponibilidade ininterrupta, ausência de erros ou segurança total. Não seremos responsáveis por danos diretos ou indiretos decorrentes do uso da Plataforma.</p>
+
+    <h2>8. Suspensão e Encerramento</h2>
+    <p>Reservamo-nos o direito de suspender ou encerrar contas que violem estes Termos, sem aviso prévio e sem direito a indemnização.</p>
+
+    <h2>9. Alterações aos Termos</h2>
+    <p>Podemos modificar estes Termos a qualquer momento. As alterações serão publicadas nesta página. O uso continuado do Serviço após a publicação constitui aceitação das novas condições.</p>
+
+    <h2>10. Lei Aplicável e Foro Competente</h2>
+    <p>Estes Termos regem-se pela legislação da República de Angola. Qualquer litígio será resolvido nos tribunais da comarca de Luanda.</p>
+
+  </div>
+
+  <script>
+  // Aplicar tema salvo
+if (localStorage.getItem("darkMode") === "true") {
+  document.documentElement.setAttribute("data-theme", "dark");
+}
+    function goBack() {
+      window.location.href = "explorar.html";
+    }
+  </script>
+  
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-400 py-16">
+    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-4 gap-10">
+      <div>
+        <h3 class="text-white text-xl font-semibold mb-4">Professor Abraão Figueira</h3>
+        <p class="text-sm">Formação prática com foco em resultados reais.</p>
+      </div>
+      <div>
+        <h4 class="text-white font-medium mb-4">Links Rápidos</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="dashboard.html" class="hover:text-white">Editor de Código</a></li>
+          <li><a href="explorar.html" class="hover:text-white">Marketplace</a></li>
+          <li><a href="cursos.html" class="hover:text-white">Cursos</a></li>
+          <li><a href="materiais.html" class="hover:text-white">Materiais</a></li>
+          
+          <li><a href="perfil.html" class="hover:text-white">Perfil</a></li>
+          <li><a href="mensagens.html" class="hover:text-white">Mensagens</a></li>
+          <li><a href="my-activity.html" class="hover:text-white">Actividades</a></li>
+          
+          <li><a href="aulas.html" class="hover:text-white">Aulas</a></li>
+          <li><a href="comunidade.html" class="hover:text-white">Comunidade</a></li>
+          <li><a href="sobre.html" class="hover:text-white">Sobre</a></li>
+           </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-medium mb-4">Legal</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="termos.html" class="hover:text-white">Termos de Uso</a></li>
+          <li><a href="politicas.html" class="hover:text-white">Política de Privacidade</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-medium mb-4">Redes Sociais</h4>
+        <div class="flex gap-6 text-3xl">
+          <a href="https://www.facebook.com/affriend.net" class="hover:text-white"><i class="fab fa-facebook"></i></a>
+          <a href="https://www.tiktok.com/@affriend7" class="hover:text-white"><i class="fab fa-tiktok"></i></a>
+          <a href="https://wa.me/244950961025" class="hover:text-white"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://t.me/IAFFriend8" class="hover:text-white"><i class="fab fa-telegram"></i></a>
+             </div>
+      </div>
+    </div>
+    <div class="text-center text-sm mt-12 border-t border-gray-800 pt-8">
+      © 2026 Professor Abraão Figueira • Todos os direitos reservados
+    </div>
+  </footer>
+</body>
+</html>

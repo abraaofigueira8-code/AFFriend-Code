@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Estatísticas - AFFriend Code</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+
+<body class="bg-gray-50">
+
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur border-b border-red-900/40">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg">AF</div>
+        <div class="leading-tight">
+          <div class="text-white font-semibold text-sm md:text-base">AFFriend Code</div>
+          <div class="text-xs text-gray-400">Estatísticas</div>
+        </div>
+      </div>
+      <a href="perfil.html" class="text-gray-300 hover:text-white text-sm">Voltar</a>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO -->
+  <main class="pt-28 pb-20 max-w-6xl mx-auto px-6">
+
+    <h1 class="text-4xl font-bold text-gray-900 mb-10">Dashboard de Estatísticas</h1>
+
+    <!-- CARDS -->
+    <div class="grid md:grid-cols-4 gap-6 mb-12">
+
+      <div class="bg-white p-6 rounded-3xl shadow text-center">
+        <div class="text-4xl mb-2">📁</div>
+        <div id="statProjetos" class="text-3xl font-bold">0</div>
+        <p class="text-gray-600 text-sm">Projetos Criados</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl shadow text-center">
+        <div class="text-4xl mb-2">🌍</div>
+        <div id="statPublicos" class="text-3xl font-bold">0</div>
+        <p class="text-gray-600 text-sm">Projetos Públicos</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl shadow text-center">
+        <div class="text-4xl mb-2">🎓</div>
+        <div id="statCursos" class="text-3xl font-bold">0</div>
+        <p class="text-gray-600 text-sm">Cursos Comprados</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl shadow text-center">
+        <div class="text-4xl mb-2">📘</div>
+        <div id="statAulas" class="text-3xl font-bold">0</div>
+        <p class="text-gray-600 text-sm">Aulas Concluídas</p>
+      </div>
+
+    </div>
+
+    <!-- GRÁFICOS -->
+    <div class="grid md:grid-cols-2 gap-10">
+
+      <!-- PROJETOS POR MÊS -->
+      <div class="bg-white p-8 rounded-3xl shadow">
+        <h2 class="text-xl font-semibold mb-4">Projetos Criados por Mês</h2>
+        <canvas id="graficoProjetos"></canvas>
+      </div>
+
+      <!-- AULAS POR CURSO -->
+      <div class="bg-white p-8 rounded-3xl shadow">
+        <h2 class="text-xl font-semibold mb-4">Aulas Concluídas por Curso</h2>
+        <canvas id="graficoAulas"></canvas>
+      </div>
+
+    </div>
+
+    <!-- PROGRESSO SEMANAL -->
+    <div class="bg-white p-8 rounded-3xl shadow mt-10">
+      <h2 class="text-xl font-semibold mb-4">Progresso Semanal</h2>
+      <canvas id="graficoSemanal"></canvas>
+    </div>
+
+  </main>
+
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    let userId = null;
+
+    auth.onAuthStateChanged(user => {
+      if (!user) return location.href = "login.html";
+      userId = user.uid;
+
+      carregarEstatisticas();
+    });
+
+    function carregarEstatisticas() {
+
+      // Projetos criados
+      db.ref("users/" + userId + "/projects").on("value", snap => {
+        document.getElementById("statProjetos").textContent = snap.size || 0;
+      });
+
+      // Projetos públicos
+      db.ref("public_projects").orderByChild("owner").equalTo(userId).on("value", snap => {
+        document.getElementById("statPublicos").textContent = snap.size || 0;
+      });
+
+      // Cursos comprados
+      db.ref("userCourses/" + userId).on("value", snap => {
+        document.getElementById("statCursos").textContent = snap.size || 0;
+      });
+
+      // Aulas concluídas
+      db.ref("userProgress/" + userId).on("value", snap => {
+        let total = 0;
+        snap.forEach(course => {
+          course.forEach(lesson => {
+            if (lesson.val() === true) total++;
+          });
+        });
+        document.getElementById("statAulas").textContent = total;
+      });
+
+      carregarGraficos();
+    }
+
+    function carregarGraficos() {
+
+      // Gráfico de projetos por mês (fake data por enquanto)
+      new Chart(document.getElementById("graficoProjetos"), {
+        type: "line",
+        data: {
+          labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"],
+          datasets: [{
+            label: "Projetos",
+            data: [2, 1, 3, 4, 2, 5],
+            borderColor: "#dc2626",
+            backgroundColor: "rgba(220,38,38,0.2)",
+            tension: 0.4
+          }]
+        }
+      });
+
+      // Gráfico de aulas por curso (fake data)
+      new Chart(document.getElementById("graficoAulas"), {
+        type: "bar",
+        data: {
+          labels: ["HTML", "CSS", "JS"],
+          datasets: [{
+            label: "Aulas concluídas",
+            data: [12, 8, 5],
+            backgroundColor: ["#dc2626", "#991b1b", "#7f1d1d"]
+          }]
+        }
+      });
+
+      // Gráfico semanal (fake data)
+      new Chart(document.getElementById("graficoSemanal"), {
+        type: "line",
+        data: {
+          labels: ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"],
+          datasets: [{
+            label: "Atividade",
+            data: [1, 2, 1, 3, 2, 4, 1],
+            borderColor: "#000",
+            backgroundColor: "rgba(0,0,0,0.2)",
+            tension: 0.4
+          }]
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>

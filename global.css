@@ -1,0 +1,509 @@
+ 
+/*DASHBOARD */
+:root {
+      --primary: #ff3333;
+      --primary-dark: #c8102e;
+      --bg: #f5f5f7;
+      --bg-soft: #ffffff;
+      --text: #1f2933;
+      --border-soft: #e5e7eb;
+      --sidebar-bg: #fff;
+      --sidebar-border: #1f2933;
+      --appbar-bg: radial-gradient(circle at top left, #ff3333 0, #111 45%, #050509 100%);
+    }
+
+    [data-theme="light"] {
+      --bg: #050509;
+      --bg-soft: #0b0b10;
+      --text: #e5e7eb;
+      --border-soft: #1f2933;
+      --sidebar-bg: #020308;
+      --sidebar-border: #111827;
+      --appbar-bg: radial-gradient(circle at top left, #ff3333 0, #000 45%, #020308 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* AppBar */
+    .appbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 64px;
+      background: var(--appbar-bg);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      display: flex;
+      align-items: center;
+      padding: 0 18px;
+      z-index: 1000;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      c
+    }
+
+    .appbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+   
+
+    .appbar-title {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .appbar-title-main {
+      font-size: 15px;
+      font-weight: 600;
+      color: #f9fafb;
+    }
+
+    .appbar-title-sub {
+      font-size: 11px;
+      color: rgba(249,250,251,0.7);
+    }
+
+    .appbar-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-appbar {
+      padding: 7px 11px;
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      border: 1px solid rgba(148,163,184,0.4);
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 13px;
+      min-width: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-appbar i {
+      font-size: 14px;
+    }
+
+    .btn-appbar:hover {
+      background: #ff3333;
+      border-color: #ff3333;
+      color: #fff;
+      box-shadow: 0 12px 25px rgba(255,51,51,0.45);
+      transform: translateY(-1px);
+    }
+
+    .btn-appbar.special-ai {
+      background: linear-gradient(135deg, #6a1b9a, #9333ea);
+      border-color: rgba(216,180,254,0.6);
+    }
+
+    .btn-appbar.special-ai:hover {
+      background: linear-gradient(135deg, #7e22ce, #a855f7);
+      box-shadow: 0 12px 25px rgba(168,85,247,0.5);
+    }
+
+    .btn-appbar.special-preview {
+      background: linear-gradient(135deg, #0ea5e9, #22c55e);
+      border-color: rgba(56,189,248,0.7);
+    }
+
+    .btn-appbar.special-preview:hover {
+      background: linear-gradient(135deg, #0284c7, #16a34a);
+      box-shadow: 0 12px 25px rgba(56,189,248,0.5);
+    }
+
+    .btn-icon-activity {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      color: #f97373;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      border-radius: 999px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-icon-activity:hover {
+      background: rgba(248,113,113,0.12);
+      transform: translateY(-1px);
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #fff 0, #ff3333 40%, #7f1d1d 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 17px;
+      cursor: pointer;
+      border: 2px solid rgba(248,250,252,0.9);
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+      transition: all 0.2s ease;
+    }
+
+    .avatar:hover {
+      transform: translateY(-1px) scale(1.02);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.6);
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Layout principal */
+    .layout {
+      display: flex;
+      height: 100vh;
+      padding-top: 64px;
+      background: radial-gradient(circle at top left, rgba(248,113,113,0.12), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(59,130,246,0.08), transparent 55%),
+                  var(--bg);
+    }
+
+
+    /* Conteúdo principal */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 14px 16px 16px 16px;
+      min-width: 0;
+      height: calc(100vh - 64px);
+    }
+
+    .editor-shell {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: rgba(15,23,42,0.96);
+      border-radius: 18px;
+      border: 1px solid rgba(148,163,184,0.35);
+      box-shadow: 0 18px 45px rgba(15,23,42,0.9);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .editor-header {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      border-bottom: 1px solid rgba(55,65,81,0.9);
+      background: radial-gradient(circle at top left, rgba(248,113,113,0.35), rgba(15,23,42,0.98));
+    }
+
+    .editor-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #e5e7eb;
+      font-size: 12px;
+    }
+
+    .editor-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .editor-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+    }
+
+    .editor-dot.red { background: #f97373; }
+    .editor-dot.yellow { background: #facc15; }
+    .editor-dot.green { background: #4ade80; }
+
+    .editor-file-name {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.85);
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 11px;
+      color: #e5e7eb;
+    }
+.editor-header-right {
+      font-size: 11px;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .editor-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .CodeMirror {
+      flex: 1;
+      height: 100% !important;
+      border: none;
+      font-size: 13px;
+      background: #88d7cc;
+    }
+
+    .preview-frame-wrapper {
+      width: 100%;
+      height: 40%;
+      border-top: 1px solid rgba(55,65,81,0.9);
+      background: #020617;
+    }
+
+    #previewFrame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: none;
+      background: white;
+    }
+
+    /* Responsividade */
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 190px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .layout {
+        padding-top: 64px;
+      }
+
+      /* ===== SIDEBAR S3 LIGHT ===== */
+
+.sidebar-s3 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
+  background: #ffffff;
+  border-right: 1px solid #e5e5e5;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  transition: transform .3s ease;
+}
+
+/* Header */
+.sidebar-s3-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-s3-header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #e60023;
+}
+
+.sidebar-s3-header p {
+  font-size: 12px;
+  color: #777;
+  margin-top: -4px;
+}
+
+/* Botão fechar */
+.sidebar-s3-close {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  color: #444;
+  cursor: pointer;
+  padding: 6px;
+}
+
+/* Navegação */
+.sidebar-s3-nav {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar-s3-nav button {
+  width: 100%;
+  padding: 12px;
+  background: #f8f8f8;
+  border-radius: 10px;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: 0.2s;
+}
+
+.sidebar-s3-nav button:hover {
+  background: #e60023;
+  color: #fff;
+}
+      
+      /* Rodapé */
+.sidebar-s3-footer {
+  margin-top: auto;
+}
+
+.sidebar-s3-footer button {
+  width: 100%;
+  padding: 12px;
+  background: #e60023;
+  color: #fff;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+}
+
+/* Botão mobile */
+.sidebar-s3-toggle {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  background: #e60023;
+  color: #fff;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+  z-index: 110;
+}
+
+/* Mobile: sidebar escondida */
+@media (max-width: 768px) {
+  .sidebar-s3 {
+    transform: translateX(-100%);
+  }
+}
+      
+     .main-content {
+        padding: 10px;
+      }
+
+      .editor-shell {
+        border-radius: 14px;
+      }
+
+      .appbar-right {
+        gap: 4px;
+      }
+
+      .btn-appbar {
+        padding: 6px 8px;
+        min-width: 34px;
+      }
+
+      .btn-icon-activity {
+        font-size: 18px;
+      }
+    }
+  
+  
+  .modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: white;
+  width: 90%;
+  max-width: 420px;
+  padding: 24px;
+  border-radius: 18px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  animation: pop 0.25s ease;
+}
+
+@keyframes pop {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-content h2 {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.modal-content label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 12px;
+  display: block;
+}
+
+.modal-content input,
+.modal-content textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin-top: 6px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.btn-cancel {
+  padding: 10px 16px;
+  background: #ddd;
+  border-radius: 10px;
+}
+.btn-primary {
+  padding: 10px 16px;
+  background: #e11d48;
+  color: white;
+  border-radius: 10px;
+}

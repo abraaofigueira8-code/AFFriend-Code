@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Painel do Vendedor • AFFriend</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- SIDEBAR S3 -->
+<aside id="sidebar"
+  class="fixed top-0 left-0 h-full w-64 bg-white shadow-xl border-r border-gray-200 flex flex-col
+         transition-transform duration-300 -translate-x-full md:translate-x-0 z-50">
+
+  <div class="px-6 py-6 border-b border-gray-200 flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-red-600">AFFriend</h1>
+      <p class="text-gray-500 text-sm">Painel do Vendedor</p>
+    </div>
+
+    <button onclick="toggleSidebar()" class="md:hidden text-gray-600 text-2xl">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <nav class="flex-1 px-4 py-6 space-y-1">
+
+    <button onclick="go('user-projects.html')" class="menu-btn">
+      <i class="fa-solid fa-lightbulb text-xl"></i> Meus Projetos
+    </button>
+
+    <button onclick="go('painel-vendedor.html')" class="menu-btn bg-red-600 text-white">
+      <i class="fa-solid fa-money-bill-trend-up text-xl"></i> Minhas Vendas
+    </button>
+
+    <button onclick="go('perfil.html')" class="menu-btn">
+      <i class="fa-solid fa-user text-xl"></i> Perfil
+    </button>
+
+  </nav>
+
+  <div class="px-6 py-4 border-t border-gray-200">
+    <button onclick="logout()" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg transition">
+      Sair
+    </button>
+  </div>
+
+</aside>
+
+<!-- NAVBAR -->
+<header class="fixed top-0 left-0 md:left-64 right-0 h-16 bg-white shadow flex items-center justify-between px-4 md:px-8 border-b z-40">
+
+  <button onclick="toggleSidebar()" class="md:hidden text-1.2xl text-gray-800">
+    <i class="fa-solid fa-bars">Abrir</i>
+  </button>
+
+  <h2 class="text-lg md:text-xl font-semibold text-gray-700">
+    Minhas Vendas
+  </h2>
+
+  <div class="flex items-center gap-3">
+    <i class="fas fa-user-circle text-3xl text-gray-600"></i>
+    <span id="userEmail" class="hidden sm:block text-gray-700 font-medium"></span>
+  </div>
+
+</header>
+
+<!-- CONTEÚDO -->
+<main class="md:ml-64 mt-20 px-4 md:px-8 pb-10">
+
+  <!-- CARDS -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+
+    <div class="bg-white shadow rounded-xl p-6">
+      <h3 class="text-gray-500 text-sm">Total de Vendas</h3>
+      <p id="totalVendas" class="text-3xl font-bold text-gray-800">0</p>
+    </div>
+
+    <div class="bg-white shadow rounded-xl p-6">
+      <h3 class="text-gray-500 text-sm">Receita Total</h3>
+      <p id="totalReceita" class="text-3xl font-bold text-green-600">0 Kz</p>
+    </div>
+
+    <div class="bg-white shadow rounded-xl p-6">
+      <h3 class="text-gray-500 text-sm">Produtos Vendidos</h3>
+      <p id="totalProdutos" class="text-3xl font-bold text-gray-800">0</p>
+    </div>
+
+  </div>
+
+  <!-- TABELA -->
+  <div class="bg-white shadow rounded-xl p-6 overflow-x-auto">
+    <table class="w-full text-left">
+      <thead>
+        <tr class="border-b">
+          <th class="py-3">Produto</th>
+          <th class="py-3">Preço</th>
+          <th class="py-3">Comprador</th>
+          <th class="py-3">Data</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaVendas"></tbody>
+    </table>
+  </div>
+
+</main>
+
+<script src="painel-vendedor.js"></script>
+<script>
+function go(p){ window.location.href = p }
+function toggleSidebar(){ document.getElementById("sidebar").classList.toggle("-translate-x-full") }
+firebase.auth().onAuthStateChanged(u=>{
+  if(!u) return window.location.href="login.html"
+  document.getElementById("userEmail").textContent = u.email
+})
+</script>
+
+</body>
+</html>

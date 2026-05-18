@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aulas - AFFriend Code</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body class="bg-gray-50">
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur border-b border-red-900/40">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg">
+          AF
+        </div>
+        <div class="leading-tight">
+          <div class="text-white font-semibold text-sm md:text-base">Professor Abraão Figueira</div>
+          <div class="text-xs text-gray-400">AFFriend Code Platform</div>
+        </div>
+      </div>
+      <div class="text-gray-300 text-sm hidden md:block">
+        <a href="cursos.html" class="hover:text-white">Voltar aos Cursos</a>
+      </div>
+    </div>
+  </header>
+  <!-- CONTEÚDO -->
+  <main class="pt-28 pb-20 max-w-6xl mx-auto px-6 flex flex-col md:flex-row gap-10">
+    <!-- LISTA DE AULAS -->
+    <aside class="md:w-1/3 bg-white shadow-xl rounded-3xl p-6 h-max">
+      <h2 class="text-xl font-semibold mb-4">Aulas</h2>
+      <div id="listaAulas" class="space-y-3">
+        <!-- Aulas via JS -->
+      </div>
+    </aside>
+    <!-- AULA SELECIONADA -->
+    <section class="flex-1 bg-white shadow-xl rounded-3xl p-8">
+      <div id="loading" class="text-center text-gray-600 text-lg">
+        Selecione uma aula para começar.
+      </div>
+      <div id="aulaBox" class="hidden">
+        <h1 id="aulaTitulo" class="text-3xl font-bold text-gray-900"></h1>
+        <div id="aulaConteudo" class="prose max-w-none mt-6"></div>
+        <button id="btnConcluir"
+          class="mt-8 bg-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-500">
+          Marcar como concluída
+        </button>
+        <button id="btnProxima"
+          class="mt-4 bg-red-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-red-500">
+          Próxima aula
+        </button>
+      </div>
+    </section>
+  </main>
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <!-- Script para a pagina de aulas, do site principal -->
+  <script src="scripts/siteAulas.js"></script>
+
+  
+  <!-- Botão Flutuante AFFriend IA -->
+<a href="affriendia.html" 
+   class="fixed bottom-6 right-6 bg-red-600 text-white rounded-full shadow-lg px-5 py-3 flex items-center gap-3 hover:bg-red-700 transition transform hover:scale-110 z-50"
+   title="Abrir AFFriend IA">
+  <i class="fas fa-robot text-2xl"></i>
+  <span class="font-semibold">Chat AFFriend IA</span>
+</a>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Minha Actividade — AFFriend Code</title>
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KK3V6HWB');</script>
+<!-- End Google Tag Manager -->
+  <!-- Tema Global 
+  <link rel="stylesheet" href="global.css">
+-->
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 transition">
+
+  <!-- SIDEBAR COMPACTA 3A -->
+  <aside id="sidebar"
+    class="fixed top-0 left-0 h-full w-16 flex flex-col items-center py-6 gap-6 shadow-lg
+           bg-white dark:bg-black transition">
+
+    <!-- Explorar -->
+    <button onclick="location.href='cursos.html'"
+      class="text-gray-500 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-500 text-2xl transition">
+      <i class="fa-solid fa-compass"></i>
+    </button>
+
+    <!-- Marketplace -->
+    <button onclick="location.href='explorar.html'"
+      class="text-gray-500 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-500 text-2xl transition">
+      <i class="fa-solid fa-store"></i>
+    </button>
+
+    <!-- Actividade (ATIVO) -->
+    <button
+      class="text-red-600 dark:text-red-500 text-2xl">
+      <i class="fa-solid fa-chart-line"></i>
+    </button>
+
+    <!-- Perfil -->
+    <button onclick="location.href='perfil.html'"
+      class="text-gray-500 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-500 text-2xl transition">
+      <i class="fa-solid fa-user"></i>
+    </button>
+
+    <!-- Configurações -->
+    <button onclick="location.href='Configuracoes.html'"
+      class="text-gray-500 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-500 text-2xl transition">
+      <i class="fa-solid fa-gear"></i>
+    </button>
+
+  </aside>
+
+  <!-- APPBAR -->
+  <header class="fixed left-16 right-0 top-0 h-16 bg-white dark:bg-gray-800 shadow flex items-center justify-between px-6 z-40">
+    <h2 class="text-red-600 font-bold text-lg">Minha Actividade</h2>
+
+    <div class="flex items-center gap-6">
+
+      <!-- Notificações -->
+      <div onclick="showNotifications()" class="relative cursor-pointer text-2xl text-red-600">
+        <i class="fas fa-bell"></i>
+        <span id="notificationBadge"
+          class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 hidden
+                 flex items-center justify-center">
+        </span>
+      </div>
+
+      <!-- Perfil -->
+      <button onclick="goToProfile()" class="text-red-600 text-3xl">
+        <i class="fas fa-user-circle"></i>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- CONTEÚDO -->
+  <main class="ml-16 pt-20 px-6 pb-10">
+
+    <h1 class="text-2xl font-bold text-red-600 mb-6 flex items-center gap-2">
+      <i class="fas fa-tag"></i> Meus Anúncios
+    </h1>
+
+    <div id="myListings" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+    <h1 class="text-2xl font-bold text-red-600 mt-12 mb-6 flex items-center gap-2">
+      <i class="fas fa-shopping-cart"></i> Minhas Compras
+    </h1>
+
+    <div id="myPurchases" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+  </main>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    let currentUser = null;
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) return window.location.href = "index.html";
+      currentUser = user;
+      loadMyActivity();
+      initNotifications();
+    });
+
+    // ==================== MODO ESCURO ====================
+    if (localStorage.getItem("darkMode") === "true") {
+      document.documentElement.classList.add("dark");
+    }
+
+    // ==================== CARREGAR ACTIVIDADE ====================
+    async function loadMyActivity() {
+      const uid = currentUser.uid;
+
+      // --- Meus Anúncios ---
+      const listingsContainer = document.getElementById("myListings");
+      listingsContainer.innerHTML = "<p class='text-gray-500'>Carregando anúncios...</p>";
+
+      const listingsSnap = await firebase.database().ref("marketplace")
+        .orderByChild("sellerId").equalTo(uid).once("value");
+
+      listingsContainer.innerHTML = "";
+      const listings = listingsSnap.val();
+
+      if (listings) {
+        Object.keys(listings).forEach(key => {
+          createListingCard(listingsContainer, listings[key], key);
+        });
+      } else {
+        listingsContainer.innerHTML =
+          `<p class='text-gray-500 col-span-full'>Você ainda não tem anúncios.</p>`;
+      }
+
+      // --- Minhas Compras ---
+      const purchasesContainer = document.getElementById("myPurchases");
+      purchasesContainer.innerHTML = "<p class='text-gray-500'>Carregando compras...</p>";
+
+      const purchasesSnap = await firebase.database().ref("purchases")
+        .orderByChild("buyerId").equalTo(uid).once("value");
+
+      purchasesContainer.innerHTML = "";
+      const purchases = purchasesSnap.val();
+
+      if (purchases) {
+        Object.keys(purchases).forEach(key => {
+          createPurchaseCard(purchasesContainer, purchases[key]);
+        });
+      } else {
+        purchasesContainer.innerHTML =
+          `<p class='text-gray-500 col-span-full'>Você ainda não fez nenhuma compra.</p>`;
+      }
+    }
+
+    // ==================== CARDS ====================
+    function createListingCard(container, proj, id) {
+      const card = document.createElement("div");
+      card.className =
+        "bg-white dark:bg-gray-800 rounded-xl shadow p-5 transition hover:-translate-y-1";
+
+      card.innerHTML = `
+        <h3 class="text-lg font-semibold">${proj.title}</h3>
+        <p class="text-gray-500 dark:text-gray-300">${proj.category || ''} • ${proj.type === 'sale' ? 'Venda' : 'Procura'}</p>
+        ${proj.price ? `<p class="text-green-600 font-bold mt-2">Kz ${Number(proj.price).toLocaleString('pt-BR')}</p>` : ''}
+        
+        <button onclick="viewProject('${id}')"
+          class="w-full mt-4 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition">
+          Ver Detalhes
+        </button>
+
+        ${proj.type === 'sale' ? `
+        <button onclick="confirmSale('${id}')"
+          class="w-full mt-2 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition">
+          Confirmar Venda / Liberar Projeto
+        </button>` : ''}
+      `;
+
+      container.appendChild(card);
+    }
+
+    function createPurchaseCard(container, purchase) {
+      const statusMap = {
+        delivered: { text: "Entregue", color: "bg-blue-100 text-blue-700" },
+        confirmed: { text: "Pagamento Confirmado", color: "bg-green-100 text-green-700" },
+        pending_payment: { text: "Aguardando Confirmação", color: "bg-yellow-100 text-yellow-700" }
+      };
+
+      const status = statusMap[purchase.status];
+
+      const card = document.createElement("div");
+      card.className =
+        "bg-white dark:bg-gray-800 rounded-xl shadow p-5 transition hover:-translate-y-1";
+
+      card.innerHTML = `
+        <h3 class="text-lg font-semibold">${purchase.projectTitle}</h3>
+        <p class="text-gray-500 dark:text-gray-300">Valor: Kz ${Number(purchase.amount).toLocaleString('pt-BR')}</p>
+
+        <span class="inline-block mt-2 px-3 py-1 rounded-full text-sm font-semibold ${status.color}">
+          ${status.text}
+        </span>
+
+        ${purchase.status === "delivered" ?
+          `<button onclick="downloadProject('${purchase.projectId}')"
+            class="w-full mt-4 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition">
+            Baixar Projeto
+          </button>` :
+          `<button disabled
+            class="w-full mt-4 bg-gray-400 text-white py-2 rounded-lg cursor-not-allowed">
+            Aguardando Confirmação
+          </button>`
+        }
+      `;
+
+      container.appendChild(card);
+    }
+
+    // ==================== FUNÇÕES ====================
+    function viewProject(id) {
+      window.location.href = `project-details.html?id=${id}`;
+    }
+
+    function downloadProject(projectId) {
+      alert("Em breve: Download direto do projeto.\nID: " + projectId);
+    }
+
+    function goToProfile() {
+      window.location.href = "profile.html";
+    }
+
+    // ==================== NOTIFICAÇÕES ====================
+    let unreadCount = 0;
+
+    function initNotifications() {
+      firebase.database().ref(`notifications/${currentUser.uid}`)
+        .orderByChild("timestamp")
+        .limitToLast(30)
+        .on("value", snap => {
+          const data = snap.val();
+          unreadCount = 0;
+
+          if (data) {
+            Object.values(data).forEach(n => {
+              if (!n.read) unreadCount++;
+            });
+          }
+
+          updateNotificationBadge();
+        });
+    }
+
+    function updateNotificationBadge() {
+      const badge = document.getElementById("notificationBadge");
+      if (!badge) return;
+
+      if (unreadCount > 0) {
+        badge.textContent = unreadCount > 9 ? "9+" : unreadCount;
+        badge.classList.remove("hidden");
+      } else {
+        badge.classList.add("hidden");
+      }
+    }
+
+    function showNotifications() {
+      firebase.database().ref(`notifications/${currentUser.uid}`)
+        .orderByChild("timestamp")
+        .limitToLast(20)
+        .once("value", snap => {
+          let html = `<h3 class="text-xl font-bold mb-4">Notificações</h3>`;
+
+          const data = snap.val();
+          if (!data) {
+            html += `<p class="text-gray-500 text-center py-10">Nenhuma notificação</p>`;
+          } else {
+            Object.keys(data).reverse().forEach(key => {
+              const n = data[key];
+              const bg = n.read ? "bg-white" : "bg-blue-50";
+
+              html += `
+                <div onclick="openNotification('${key}', '${n.type}', '${n.projectId || ''}', '${n.purchaseId || ''}')"
+                  class="${bg} p-4 border-b cursor-pointer">
+                  <strong>${n.message}</strong><br>
+                  <small class="text-gray-500">${new Date(n.timestamp).toLocaleString('pt-PT')}</small>
+                </div>
+              `;
+            });
+          }
+
+          showCustomModal(html);
+        });
+    }
+
+    function openNotification(key, type, projectId, purchaseId) {
+      firebase.database().ref(`notifications/${currentUser.uid}/${key}/read`).set(true);
+
+      if (type === "new_purchase" && purchaseId) {
+        window.location.href = `confirmar-compra.html?purchaseId=${purchaseId}&projectId=${projectId}`;
+      } else if (type === "project_delivered") {
+        window.location.href = "my-activity.html";
+      } else if (projectId) {
+        window.location.href = `project-details.html?id=${projectId}`;
+      }
+    }
+
+    function showCustomModal(content) {
+      const modal = document.createElement("div");
+      modal.className =
+        "fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50";
+
+      modal.innerHTML = `
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 w-11/12 max-w-lg max-h-[80vh] overflow-auto">
+          ${content}
+          <button onclick="this.parentElement.parentElement.remove()"
+            class="mt-4 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg">
+            Fechar
+          </button>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+    }
+  </script>
+
+</body>
+</html>

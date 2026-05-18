@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Perfil - AFFriend Code</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+
+<body class="bg-gray-50">
+
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur border-b border-red-900/40">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg">
+          AF
+        </div>
+        <div class="leading-tight">
+          <div class="text-white font-semibold text-sm md:text-base">Professor Abraão Figueira</div>
+          <div class="text-xs text-gray-400">AFFriend Code Platform</div>
+        </div>
+      </div>
+      <div class="text-gray-300 text-sm hidden md:block">
+        <a href="dashboard.html" class="hover:text-white">Editor</a>
+      </div>
+      <div class="text-gray-300 text-sm hidden md:block">
+        <a href="mensagens.html" class="hover:text-white">Mensagens</a>
+      </div>
+      <div class="text-gray-300 text-sm hidden md:block">
+        <a href="notificacoes.html" class="hover:text-white">Notificações</a>
+      </div>
+      <div class="text-gray-300 text-sm hidden md:block">
+        <a href="my-activity.html" class="hover:text-white">Actividades</a>
+      </div>
+      <div class="text-gray-300 text-sm hidden md:block">
+        <a href="produtos.html" class="hover:text-white">Produtos</a>
+      </div>
+    </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm text-gray-300">
+        <a href="index.html" class="hover:text-white">Início</a>
+        <a href="cursos.html" class="hover:text-white">Cursos</a>
+        <a href="explorar.html" class="hover:text-white">Marketplace</a>
+        <a href="materiais.html" class="hover:text-white">Materiais</a>
+        </nav>
+    </div>
+  </header>
+
+  <!-- PERFIL -->
+  <section class="pt-28 pb-16 max-w-6xl mx-auto px-6">
+    <div class="bg-white shadow-xl rounded-3xl p-10 flex flex-col md:flex-row gap-10 items-center">
+
+      <div class="w-32 h-32 rounded-full bg-red-600 flex items-center justify-center text-white text-5xl font-bold">
+        <span id="perfilInicial">U</span>
+      </div>
+
+      <div class="flex-1">
+        <h1 id="perfilNome" class="text-3xl font-bold text-gray-900">Usuário</h1>
+        <p id="perfilEmail" class="text-gray-600 mt-2"></p>
+
+        <div class="mt-6 flex flex-wrap gap-4">
+          <div class="bg-gray-100 px-6 py-3 rounded-xl text-center">
+            <div id="statProjetos" class="text-2xl font-bold">0</div>
+            <div class="text-gray-600 text-sm">Projetos</div>
+          </div>
+
+          <div class="bg-gray-100 px-6 py-3 rounded-xl text-center">
+            <div id="statCursos" class="text-2xl font-bold">0</div>
+            <div class="text-gray-600 text-sm">Cursos</div>
+          </div>
+
+          <div class="bg-gray-100 px-6 py-3 rounded-xl text-center">
+            <div id="statProdutos" class="text-2xl font-bold">0</div>
+            <div class="text-gray-600 text-sm">Produtos</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CURSOS COMPRADOS -->
+  <section class="max-w-6xl mx-auto px-6 py-10">
+    <h2 class="text-2xl font-semibold mb-6 text-gray-800">Cursos Comprados</h2>
+
+    <div id="listaCursos" class="grid md:grid-cols-3 gap-8"></div>
+
+    <p id="semCursos" class="text-gray-500 hidden">Nenhum curso comprado.</p>
+  </section>
+
+  <!-- PRODUTOS COMPRADOS -->
+  <section class="max-w-6xl mx-auto px-6 py-10">
+    <h2 class="text-2xl font-semibold mb-6 text-gray-800">Produtos Comprados</h2>
+
+    <div id="listaProdutos" class="grid md:grid-cols-3 gap-8"></div>
+
+    <p id="semProdutos" class="text-gray-500 hidden">Nenhum produto comprado.</p>
+  </section>
+
+  <!-- PROJETOS PÚBLICOS -->
+  <section class="max-w-6xl mx-auto px-6 py-10">
+    <h2 class="text-2xl font-semibold mb-6 text-gray-800">Projetos Públicos</h2>
+
+    <div id="listaPublicos" class="grid md:grid-cols-3 gap-8"></div>
+
+    <p id="semPublicos" class="text-gray-500 hidden">Nenhum projeto público.</p>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="bg-red-700 text-white py-16">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <h2 class="text-3xl font-bold">Receba novidades e materiais exclusivos</h2>
+      <p class="mt-3 text-red-200">Cursos, ferramentas, templates e muito mais.</p>
+
+      <div class="mt-6 flex flex-col md:flex-row gap-4 justify-center">
+        <input id="emailNews" type="email" placeholder="Seu email"
+          class="p-4 rounded-xl text-gray-800 w-full md:w-96"/>
+        <button onclick="inscreverNewsletter()"
+          class="bg-black px-6 py-4 rounded-xl font-semibold hover:bg-gray-900">
+          Inscrever
+        </button>
+      </div>
+
+      <p id="msgNews" class="mt-4 text-sm text-green-200 hidden">Inscrição realizada com sucesso!</p>
+    </div>
+  </section>
+
+  <!-- FOOTER PREMIUM -->
+  <footer class="bg-gray-900 text-gray-400 py-16">
+    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-4 gap-10">
+
+      <div>
+        <h3 class="text-white text-xl font-semibold mb-4">AFFriend Code</h3>
+        <p class="text-sm">Plataforma de educação e tecnologia criada por Professor Abraão Figueira.</p>
+      </div>
+
+      <div>
+        <h4 class="text-white font-medium mb-4">Links Rápidos</h4>
+        <ul class="space-y-2 text-sm">
+         <li><a href="dashboard.html" class="hover:text-white">Editor de Código</a></li>
+          <li><a href="explorar.html" class="hover:text-white">Marketplace</a></li>
+          <li><a href="cursos.html" class="hover:text-white">Cursos</a></li>
+          <li><a href="materiais.html" class="hover:text-white">Materiais</a></li>
+          
+          <li><a href="perfil.html" class="hover:text-white">Perfil</a></li>
+          <li><a href="mensagens.html" class="hover:text-white">Mensagens</a></li>
+          <li><a href="my-activity.html" class="hover:text-white">Actividades</a></li>
+          
+          <li><a href="aulas.html" class="hover:text-white">Aulas</a></li>
+          <li><a href="comunidade.html" class="hover:text-white">Comunidade</a></li>
+          <li><a href="sobre.html" class="hover:text-white">Sobre</a></li>
+             </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white font-medium mb-4">Legal</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="termos.html" class="hover:text-white">Termos de Uso</a></li>
+          <li><a href="politicas.html" class="hover:text-white">Política de Privacidade</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white font-medium mb-4">Redes Sociais</h4>
+        <div class="flex gap-6 text-3xl">
+          <a href="#" class="hover:text-white"><i class="fab fa-facebook"></i></a>
+          <a href="#" class="hover:text-white"><i class="fab fa-tiktok"></i></a>
+          <a href="#" class="hover:text-white"><i class="fab fa-whatsapp"></i></a>
+          <a href="#" class="hover:text-white"><i class="fab fa-telegram"></i></a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="text-center text-sm mt-12 border-t border-gray-800 pt-8">
+      © 2026 AFFriend Code • Todos os direitos reservados
+    </div>
+  </footer>
+
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    const db = firebase.database();
+    const auth = firebase.auth();
+
+    let userId = null;
+
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        alert("Faça login para ver seu perfil.");
+        location.href = "login.html";
+        return;
+      }
+
+      userId = user.uid;
+
+      carregarPerfil(user);
+      carregarProjetos();
+      carregarCursos();
+      carregarProdutos();
+      carregarPublicos();
+    });
+
+    function carregarPerfil(user) {
+      document.getElementById("perfilNome").textContent = user.displayName || "Usuário";
+      document.getElementById("perfilEmail").textContent = user.email;
+      document.getElementById("perfilInicial").textContent = (user.displayName || "U")[0].toUpperCase();
+    }
+
+    function carregarProjetos() {
+  db.ref("public_projects")
+    .orderByChild("owner")
+    .equalTo(userId)
+    .on("value", snap => {
+      const count = snap.exists() ? snap.numChildren() : 0;
+      document.getElementById("statProjetos").textContent = count;
+    });
+}
+
+    function carregarCursos() {
+  db.ref("userCourses/" + userId).on("value", snap => {
+    document.getElementById("statCursos").textContent = snap.numChildren() || 0;
+
+    const lista = document.getElementById("listaCursos");
+    const vazio = document.getElementById("semCursos");
+
+    lista.innerHTML = "";
+
+    if (!snap.exists()) {
+      vazio.classList.remove("hidden");
+      return;
+    }
+
+    vazio.classList.add("hidden");
+
+    snap.forEach(child => {
+      db.ref("courses/" + child.key).once("value").then(curso => {
+        const c = curso.val();
+
+        const card = `
+          <div class="bg-white rounded-3xl p-8 shadow hover:shadow-xl transition flex flex-col">
+            <div class="text-6xl mb-6">${c.emoji || "📘"}</div>
+            <h3 class="text-2xl font-semibold">${c.title}</h3>
+            <p class="text-gray-600 my-4 line-clamp-3">${c.description}</p>
+
+            <button onclick="location.href='curso-detalhes.html?id=${child.key}'"
+              class="mt-auto w-full bg-red-600 text-white py-3 rounded-2xl font-medium hover:bg-red-500">
+              Ver Curso
+            </button>
+          </div>
+        `;
+
+        lista.insertAdjacentHTML("beforeend", card);
+      });
+    });
+  });
+}
+
+    function carregarProdutos() {
+  db.ref("userPurchases/" + userId).on("value", snap => {
+    document.getElementById("statProdutos").textContent = snap.numChildren() || 0;
+
+    const lista = document.getElementById("listaProdutos");
+    const vazio = document.getElementById("semProdutos");
+
+    lista.innerHTML = "";
+
+    if (!snap.exists()) {
+      vazio.classList.remove("hidden");
+      return;
+    }
+
+    vazio.classList.add("hidden");
+
+    snap.forEach(child => {
+      db.ref("marketplace/" + child.key).once("value").then(prod => {
+        const p = prod.val();
+
+        const card = `
+          <div class="bg-white rounded-3xl p-8 shadow hover:shadow-xl transition flex flex-col">
+            <div class="text-6xl mb-6">${p.emoji || "📦"}</div>
+            <h3 class="text-2xl font-semibold">${p.title}</h3>
+            <p class="text-gray-600 my-4 line-clamp-3">${p.description}</p>
+
+            <button onclick="location.href='explorar.html?id=${child.key}'"
+              class="mt-auto w-full bg-red-600 text-white py-3 rounded-2xl font-medium hover:bg-red-500">
+              Ver Produto
+            </button>
+          </div>
+        `;
+
+        lista.insertAdjacentHTML("beforeend", card);
+      });
+    });
+  });
+}
+
+    function carregarPublicos() {
+      db.ref("public_projects").orderByChild("owner").equalTo(userId).on("value", snap => {
+        const lista = document.getElementById("listaPublicos");
+        const vazio = document.getElementById("semPublicos");
+
+        lista.innerHTML = "";
+
+        if (!snap.exists()) {
+          vazio.classList.remove("hidden");
+          return;
+        }
+
+        vazio.classList.add("hidden");
+
+        snap.forEach(child => {
+          const p = child.val();
+
+          const card = `
+            <div class="bg-white rounded-3xl p-8 shadow hover:shadow-xl transition flex flex-col">
+              <div class="text-6xl mb-6">${p.emoji || "📦"}</div>
+              <h3 class="text-2xl font-semibold">${p.title}</h3>
+              <p class="text-gray-600 my-4 line-clamp-3">${p.description}</p>
+
+              <button onclick="location.href='projeto.html?id=${child.key}'"
+                class="mt-auto w-full bg-red-600 text-white py-3 rounded-2xl font-medium hover:bg-red-500">
+                Ver Projeto
+              </button>
+            </div>
+          `;
+
+          lista.insertAdjacentHTML("beforeend", card);
+        });
+      });
+    }
+
+    function inscreverNewsletter() {
+      const email = document.getElementById("emailNews").value.trim();
+      if (!email) return alert("Digite um email válido.");
+
+      db.ref("newsletter").push({ email, createdAt: Date.now() });
+
+      document.getElementById("msgNews").classList.remove("hidden");
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mensagens - AFFriend Code</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+  <div class="flex h-screen">
+
+    <!-- LISTA DE CONVERSAS -->
+    <aside class="w-1/3 bg-white border-r overflow-y-auto">
+      <div class="p-4 border-b">
+        <h2 class="text-xl font-bold">Conversas</h2>
+      </div>
+
+      <div id="listaConversas" class="p-4 space-y-4"></div>
+    </aside>
+
+    <!-- CHAT -->
+    <main class="flex-1 flex flex-col">
+
+      <div id="chatHeader" class="p-4 bg-white border-b font-semibold text-gray-800">
+        Selecione uma conversa
+      </div>
+
+      <div id="chatMensagens" class="flex-1 p-4 overflow-y-auto space-y-4"></div>
+
+      <div class="p-4 bg-white border-t flex gap-3">
+        <input id="msgInput" type="text" placeholder="Digite uma mensagem..."
+          class="flex-1 p-3 border rounded-xl"/>
+        <button onclick="enviarMensagem()" class="bg-red-600 text-white px-6 py-3 rounded-xl">Enviar</button>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    let userId = null;
+    let conversaAtiva = null;
+
+    auth.onAuthStateChanged(user => {
+      if (!user) return location.href = "login.html";
+      userId = user.uid;
+      carregarConversas();
+    });
+
+    function carregarConversas() {
+      db.ref("messages/" + userId).on("value", snap => {
+        const lista = document.getElementById("listaConversas");
+        lista.innerHTML = "";
+
+        snap.forEach(child => {
+          const otherId = child.key;
+
+          const card = `
+            <button onclick="abrirConversa('${otherId}')"
+              class="w-full text-left p-4 bg-gray-100 rounded-xl hover:bg-gray-200">
+              Conversa com ${otherId}
+            </button>
+          `;
+
+          lista.insertAdjacentHTML("beforeend", card);
+        });
+      });
+    }
+
+    function abrirConversa(otherId) {
+      conversaAtiva = otherId;
+      document.getElementById("chatHeader").textContent = "Conversando com " + otherId;
+
+      db.ref("messages/" + userId + "/" + otherId).on("value", snap => {
+        const chat = document.getElementById("chatMensagens");
+        chat.innerHTML = "";
+
+        snap.forEach(child => {
+          const m = child.val();
+
+          const msg = `
+            <div class="max-w-xs p-3 rounded-xl ${m.from === userId ? 'bg-red-600 text-white ml-auto' : 'bg-white text-gray-800'}">
+              ${m.text}
+            </div>
+          `;
+
+          chat.insertAdjacentHTML("beforeend", msg);
+        });
+
+        chat.scrollTop = chat.scrollHeight;
+      });
+    }
+
+    function enviarMensagem() {
+      if (!conversaAtiva) return;
+
+      const texto = document.getElementById("msgInput").value.trim();
+      if (!texto) return;
+
+      const msg = {
+        text: texto,
+        from: userId,
+        time: Date.now()
+      };
+
+      db.ref("messages/" + userId + "/" + conversaAtiva).push(msg);
+      db.ref("messages/" + conversaAtiva + "/" + userId).push(msg);
+
+      document.getElementById("msgInput").value = "";
+    }
+  </script>
+
+</body>
+</html>
